@@ -1,0 +1,43 @@
+---
+import ConsultationWizard from '@/components/svelte/ConsultationWizard.svelte';
+import PageHero from '@/components/patterns/PageHero.astro';
+import Container from '@/components/layout/Container.astro';
+import Section from '@/components/layout/Section.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Schedule a Consultation | Hawthorne & Cole"
+  description="Use the fictional Hawthorne & Cole consultation demonstration to explore a guided legal-intake experience. No information is transmitted or stored."
+>
+  <PageHero
+    eyebrow="Consultation"
+    title="Tell us what decision you are facing."
+    intro={[
+      'A useful first conversation begins with enough context to understand the problem.',
+      'Use the guided form below to identify the type of matter and provide a brief description.',
+    ]}
+    variant="compact"
+  />
+
+  <Section tone="muted" spacing="compact" border="both">
+    <Container width="content">
+      <aside class="consultation-disclosure" aria-label="Consultation demonstration disclosure">
+        <strong>Portfolio demonstration</strong>
+        <p>This is a demonstration form for a fictional law firm. Do not submit confidential, personal, financial, or legally sensitive information. No information entered here is transmitted to an attorney.</p>
+      </aside>
+    </Container>
+  </Section>
+
+  <Section>
+    <Container width="content">
+      <ConsultationWizard client:load />
+    </Container>
+  </Section>
+</BaseLayout>
+
+<style>
+  .consultation-disclosure { display: grid; gap: var(--space-sm); border-inline-start: var(--border-width-emphasis) solid var(--accent); padding-inline-start: var(--space-lg); }
+  .consultation-disclosure strong { color: var(--primary); font-size: var(--type-label-size); letter-spacing: var(--type-label-tracking); text-transform: uppercase; }
+  .consultation-disclosure p { max-width: var(--container-prose); margin: 0; color: var(--muted-foreground); }
+</style>
