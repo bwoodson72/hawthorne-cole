@@ -45,6 +45,7 @@ const attorneyProfiles = await Promise.all(
             linkLabel={`Meet ${attorney.data.name.split(' ')[0]}`}
             expectedPortraitFilename={`${attorney.id}-portrait.webp`}
             variant="featured"
+            headingLevel={2}
           />
         ))}
       </div>

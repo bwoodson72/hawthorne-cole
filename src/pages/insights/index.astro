@@ -55,6 +55,7 @@ const insightCards = await Promise.all(
               href={`/insights/${insight.id}/`}
               publishedDate={insight.data.publishedDate}
               variant={index < 3 ? 'featured' : 'standard'}
+              headingLevel={2}
             />
           ))}
         </div>

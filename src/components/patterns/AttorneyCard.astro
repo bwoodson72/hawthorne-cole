@@ -12,8 +12,10 @@ interface Props {
   portrait?: Portrait;
   expectedPortraitFilename?: string;
   variant?: 'standard' | 'featured';
+  headingLevel?: 2 | 3;
 }
-const { name, title, focusAreas, bio, href, linkLabel, portrait, expectedPortraitFilename = 'attorney-portrait.webp', variant = 'standard' } = Astro.props;
+const { name, title, focusAreas, bio, href, linkLabel, portrait, expectedPortraitFilename = 'attorney-portrait.webp', variant = 'standard', headingLevel = 3 } = Astro.props;
+const Heading = `h${headingLevel}` as const;
 ---
 <article class:list={['attorney', `attorney--${variant}`]}>
   <div class="attorney__portrait">
@@ -21,7 +23,7 @@ const { name, title, focusAreas, bio, href, linkLabel, portrait, expectedPortrai
   </div>
   <div class="attorney__content">
     <p class="attorney__role">{title}</p>
-    <h3><a href={href}>{name}</a></h3>
+    <Heading><a href={href}>{name}</a></Heading>
     <p class="attorney__focus">{focusAreas.join(' · ')}</p>
     <p class="attorney__bio">{bio}</p>
     <a class="attorney__link" href={href}>{linkLabel ?? `Meet ${name.split(' ')[0]}`} <span aria-hidden="true">→</span></a>
@@ -33,12 +35,12 @@ const { name, title, focusAreas, bio, href, linkLabel, portrait, expectedPortrai
   .attorney__portrait { display: grid; aspect-ratio: 4 / 5; overflow: hidden; background: var(--surface-muted); }
   .attorney__portrait img { width: 100%; height: 100%; object-fit: cover; }
   .attorney__content { display: grid; gap: var(--space-md); align-content: start; }
-  .attorney__role, .attorney h3, .attorney__focus, .attorney__bio { margin: 0; }
+  .attorney__role, .attorney h2, .attorney h3, .attorney__focus, .attorney__bio { margin: 0; }
   .attorney__role, .attorney__focus { font-size: var(--type-caption-size); font-weight: var(--type-caption-weight); letter-spacing: var(--type-caption-tracking); line-height: var(--type-caption-line-height); text-transform: uppercase; }
   .attorney__role { color: var(--primary); }
   .attorney__focus { color: var(--muted-foreground); }
-  .attorney h3 { font-size: var(--type-heading-3-size); font-weight: var(--type-heading-3-weight); line-height: var(--type-heading-3-line-height); }
-  .attorney h3 a { color: inherit; text-decoration: none; }
+  .attorney h2, .attorney h3 { font-size: var(--type-heading-3-size); font-weight: var(--type-heading-3-weight); line-height: var(--type-heading-3-line-height); }
+  .attorney h2 a, .attorney h3 a { color: inherit; text-decoration: none; }
   .attorney__bio { color: var(--muted-foreground); line-height: var(--type-body-lg-line-height); }
   .attorney__link { width: fit-content; color: var(--primary); font-weight: var(--type-label-weight); text-underline-offset: var(--space-xs); }
   @media (min-width: 48rem) { .attorney--featured { grid-template-columns: minmax(14rem, 2fr) minmax(0, 3fr); align-items: center; } }

@@ -48,6 +48,7 @@ const practicesWithAttorneys = await Promise.all(
             index={index + 1}
             attorney={attorneys.map(({ data }) => data.name).join(' and ')}
             variant={index === 0 ? 'featured' : 'editorial'}
+            headingLevel={2}
           />
         ))}
       </div>

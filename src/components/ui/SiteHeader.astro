@@ -163,6 +163,7 @@ const isPracticeAreaActive = currentPath.startsWith('/practice-areas/');
 
   .hc-site-header .nav-link {
     display: inline-flex;
+    min-height: var(--control-height);
     align-items: center;
     gap: var(--space-xs);
     border: 0;
@@ -217,7 +218,9 @@ const isPracticeAreaActive = currentPath.startsWith('/practice-areas/');
   }
 
   .hc-site-header .practice-menu-link {
-    display: block;
+    display: flex;
+    min-height: var(--control-height);
+    align-items: center;
     border-radius: var(--radius-control);
     padding: var(--space-sm) var(--space-md);
     color: var(--surface-foreground);
@@ -241,6 +244,7 @@ const isPracticeAreaActive = currentPath.startsWith('/practice-areas/');
   }
 
   .hc-site-header .consultation-link {
+    min-height: var(--control-height);
     align-items: center;
     justify-content: center;
     border: var(--border-width-hairline) solid var(--primary);
@@ -265,6 +269,7 @@ const isPracticeAreaActive = currentPath.startsWith('/practice-areas/');
 
   .hc-site-header .menu-trigger,
   .hc-site-header .menu-close {
+    min-height: var(--control-height);
     border: var(--border-width-hairline) solid var(--border);
     border-radius: var(--radius-control);
     background: var(--surface);
@@ -345,7 +350,9 @@ const isPracticeAreaActive = currentPath.startsWith('/practice-areas/');
 
   .mobile-nav-heading,
   .mobile-nav-link {
-    display: block;
+    display: flex;
+    min-height: var(--control-height);
+    align-items: center;
     color: var(--foreground);
     text-decoration: none;
   }

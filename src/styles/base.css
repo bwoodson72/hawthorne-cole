@@ -39,6 +39,12 @@
     outline-offset: var(--space-xs);
   }
 
+  .bg-inverse :focus-visible,
+  .page-hero--inverse :focus-visible,
+  .hc-site-footer :focus-visible {
+    outline-color: var(--accent);
+  }
+
   button,
   [role="button"] {
     cursor: pointer;

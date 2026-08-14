@@ -149,13 +149,13 @@
   };
 </script>
 
-<form class="wizard" onsubmit={(event) => event.preventDefault()} novalidate={true}>
+<form class="wizard" aria-labelledby="wizard-heading" autocomplete="off" onsubmit={(event) => event.preventDefault()} novalidate={true}>
   {#if step < 5}
     <nav class="progress" aria-label="Consultation progress">
       <ol>
         {#each progressLabels as label, index}
           <li class:current={step === index + 1} class:complete={step > index + 1} aria-current={step === index + 1 ? 'step' : undefined}>
-            <span>{index + 1}</span><span>{label}</span>
+            <span>{index + 1}</span><span>{label}{#if step > index + 1}<span class="visually-hidden"> — complete</span>{/if}</span>
           </li>
         {/each}
       </ol>
@@ -181,12 +181,12 @@
         <h2 id="wizard-heading" tabindex="-1" bind:this={stepHeading}>What can we help with?</h2>
         <p>Choose the category that most closely matches the issue. You can select <strong>Something else</strong> if you are unsure.</p>
       </header>
-      <fieldset class:error-field={errors.matterType} aria-describedby={errors.matterType ? 'matterType-error' : undefined}>
-        <legend class="visually-hidden">Matter type</legend>
+      <fieldset class:error-field={errors.matterType} aria-invalid={errors.matterType ? 'true' : undefined} aria-describedby={errors.matterType ? 'matterType-error' : undefined}>
+        <legend class="visually-hidden">Matter type (required)</legend>
         <div class="matter-options">
           {#each matterOptions as option}
             <label class:checked={form.matterType === option.value}>
-              <input id={option.value === 'business' ? 'matterType' : undefined} type="radio" name="matterType" value={option.value} checked={form.matterType === option.value} onchange={() => selectMatter(option.value)} />
+              <input id={option.value === 'business' ? 'matterType' : undefined} type="radio" name="matterType" value={option.value} checked={form.matterType === option.value} onchange={() => selectMatter(option.value)} required />
               <span><strong>{option.label}</strong><small>{option.description}</small></span>
             </label>
           {/each}
@@ -204,21 +204,21 @@
       </header>
 
       {#if activeQuestions}
-        <fieldset class:error-field={errors.primaryDetail} aria-describedby={errors.primaryDetail ? 'primaryDetail-error' : undefined}>
-          <legend>{activeQuestions.primaryLabel}</legend>
+        <fieldset class:error-field={errors.primaryDetail} aria-invalid={errors.primaryDetail ? 'true' : undefined} aria-describedby={errors.primaryDetail ? 'primaryDetail-error' : undefined}>
+          <legend>{activeQuestions.primaryLabel} <span class="requirement">(required)</span></legend>
           <div class="choice-row">
             {#each activeQuestions.primaryOptions as option}
-              <label><input id={option === activeQuestions.primaryOptions[0] ? 'primaryDetail' : undefined} type="radio" name="primaryDetail" value={option.value} bind:group={form.primaryDetail} /><span>{option.label}</span></label>
+              <label><input id={option === activeQuestions.primaryOptions[0] ? 'primaryDetail' : undefined} type="radio" name="primaryDetail" value={option.value} bind:group={form.primaryDetail} required /><span>{option.label}</span></label>
             {/each}
           </div>
           {#if errors.primaryDetail}<p class="field-error" id="primaryDetail-error">{errors.primaryDetail}</p>{/if}
         </fieldset>
 
-        <fieldset class:error-field={errors.secondaryDetail} aria-describedby={errors.secondaryDetail ? 'secondaryDetail-error' : undefined}>
-          <legend>{activeQuestions.secondaryLabel}</legend>
+        <fieldset class:error-field={errors.secondaryDetail} aria-invalid={errors.secondaryDetail ? 'true' : undefined} aria-describedby={errors.secondaryDetail ? 'secondaryDetail-error' : undefined}>
+          <legend>{activeQuestions.secondaryLabel} <span class="requirement">(required)</span></legend>
           <div class="choice-row">
             {#each activeQuestions.secondaryOptions as option}
-              <label><input id={option === activeQuestions.secondaryOptions[0] ? 'secondaryDetail' : undefined} type="radio" name="secondaryDetail" value={option.value} bind:group={form.secondaryDetail} /><span>{option.label}</span></label>
+              <label><input id={option === activeQuestions.secondaryOptions[0] ? 'secondaryDetail' : undefined} type="radio" name="secondaryDetail" value={option.value} bind:group={form.secondaryDetail} required /><span>{option.label}</span></label>
             {/each}
           </div>
           {#if errors.secondaryDetail}<p class="field-error" id="secondaryDetail-error">{errors.secondaryDetail}</p>{/if}
@@ -226,9 +226,9 @@
       {/if}
 
       <div class="field" class:error-field={errors.description}>
-        <label for="description">Briefly describe what is happening.</label>
+        <label for="description">Briefly describe what is happening. <span class="requirement">(required)</span></label>
         <p class="helper" id="description-help">Provide enough information to understand the situation, but do not include confidential or sensitive information. This portfolio form does not transmit submissions.</p>
-        <textarea id="description" rows="6" bind:value={form.description} aria-invalid={errors.description ? 'true' : undefined} aria-describedby={`description-help${errors.description ? ' description-error' : ''}`}></textarea>
+        <textarea id="description" rows="6" bind:value={form.description} aria-invalid={errors.description ? 'true' : undefined} aria-describedby={`description-help${errors.description ? ' description-error' : ''}`} required></textarea>
         {#if errors.description}<p class="field-error" id="description-error">{errors.description}</p>{/if}
       </div>
       <div class="actions"><button class="button button--secondary" type="button" onclick={() => goToStep(1)}>Back</button><button class="button button--primary" type="button" onclick={continueWizard}>Continue</button></div>
@@ -242,27 +242,27 @@
       </header>
       <div class="contact-fields">
         <div class="field" class:error-field={errors.fullName}>
-          <label for="fullName">Full name</label>
-          <input id="fullName" type="text" autocomplete="off" bind:value={form.fullName} aria-invalid={errors.fullName ? 'true' : undefined} aria-describedby={errors.fullName ? 'fullName-error' : undefined} />
+          <label for="fullName">Full name <span class="requirement">(required)</span></label>
+          <input id="fullName" type="text" autocomplete="off" bind:value={form.fullName} aria-invalid={errors.fullName ? 'true' : undefined} aria-describedby={errors.fullName ? 'fullName-error' : undefined} required />
           {#if errors.fullName}<p class="field-error" id="fullName-error">{errors.fullName}</p>{/if}
         </div>
         <div class="field" class:error-field={errors.email}>
-          <label for="email">Email address</label>
-          <input id="email" type="email" autocomplete="off" bind:value={form.email} aria-invalid={errors.email ? 'true' : undefined} aria-describedby={errors.email ? 'email-error' : undefined} />
+          <label for="email">Email address <span class="requirement">(required)</span></label>
+          <input id="email" type="email" autocomplete="off" bind:value={form.email} aria-invalid={errors.email ? 'true' : undefined} aria-describedby={errors.email ? 'email-error' : undefined} required />
           {#if errors.email}<p class="field-error" id="email-error">{errors.email}</p>{/if}
         </div>
         <div class="field" class:error-field={errors.phone}>
-          <label for="phone">Phone number</label>
-          <input id="phone" type="tel" autocomplete="off" bind:value={form.phone} aria-invalid={errors.phone ? 'true' : undefined} aria-describedby={errors.phone ? 'phone-error' : undefined} />
+          <label for="phone">Phone number <span class="requirement">(required)</span></label>
+          <input id="phone" type="tel" autocomplete="off" bind:value={form.phone} aria-invalid={errors.phone ? 'true' : undefined} aria-describedby={errors.phone ? 'phone-error' : undefined} required />
           {#if errors.phone}<p class="field-error" id="phone-error">{errors.phone}</p>{/if}
         </div>
       </div>
       <fieldset>
-        <legend>Preferred contact method</legend>
+        <legend>Preferred contact method <span class="requirement">(optional)</span></legend>
         <div class="choice-row">{#each choices('Phone', 'Email', 'Either') as option}<label><input type="radio" name="preferredContact" value={option.value} bind:group={form.preferredContact} /><span>{option.label}</span></label>{/each}</div>
       </fieldset>
       <fieldset>
-        <legend>Preferred consultation period</legend>
+        <legend>Preferred consultation period <span class="requirement">(optional)</span></legend>
         <div class="choice-row">{#each choices('Morning', 'Afternoon', 'No preference') as option}<label><input type="radio" name="preferredPeriod" value={option.value} bind:group={form.preferredPeriod} /><span>{option.label}</span></label>{/each}</div>
       </fieldset>
       <p class="portfolio-helper">This form is a functional portfolio demonstration. Information entered into the public demo should not be transmitted or stored.</p>
@@ -277,9 +277,9 @@
         <p>Check the information below before completing the demonstration.</p>
       </header>
       <div class="review-groups">
-        <section aria-labelledby="review-matter"><div class="review-heading"><h3 id="review-matter">Matter</h3><button type="button" onclick={() => goToStep(1)}>Edit</button></div><dl><div><dt>Matter type</dt><dd>{selectedMatter?.label}</dd></div></dl></section>
-        <section aria-labelledby="review-details"><div class="review-heading"><h3 id="review-details">Details</h3><button type="button" onclick={() => goToStep(2)}>Edit</button></div><dl>{#if activeQuestions}<div><dt>{activeQuestions.primaryLabel}</dt><dd>{selectedPrimary}</dd></div><div><dt>{activeQuestions.secondaryLabel}</dt><dd>{selectedSecondary}</dd></div>{/if}<div><dt>Briefly describe what is happening.</dt><dd class="preserve-lines">{form.description}</dd></div></dl></section>
-        <section aria-labelledby="review-contact"><div class="review-heading"><h3 id="review-contact">Contact</h3><button type="button" onclick={() => goToStep(3)}>Edit</button></div><dl><div><dt>Full name</dt><dd>{form.fullName}</dd></div><div><dt>Email address</dt><dd>{form.email}</dd></div><div><dt>Phone number</dt><dd>{form.phone}</dd></div>{#if form.preferredContact}<div><dt>Preferred contact method</dt><dd>{choices('Phone', 'Email', 'Either').find((option) => option.value === form.preferredContact)?.label}</dd></div>{/if}{#if form.preferredPeriod}<div><dt>Preferred consultation period</dt><dd>{choices('Morning', 'Afternoon', 'No preference').find((option) => option.value === form.preferredPeriod)?.label}</dd></div>{/if}</dl></section>
+        <section aria-labelledby="review-matter"><div class="review-heading"><h3 id="review-matter">Matter</h3><button type="button" aria-label="Edit matter type" onclick={() => goToStep(1)}>Edit</button></div><dl><div><dt>Matter type</dt><dd>{selectedMatter?.label}</dd></div></dl></section>
+        <section aria-labelledby="review-details"><div class="review-heading"><h3 id="review-details">Details</h3><button type="button" aria-label="Edit matter details" onclick={() => goToStep(2)}>Edit</button></div><dl>{#if activeQuestions}<div><dt>{activeQuestions.primaryLabel}</dt><dd>{selectedPrimary}</dd></div><div><dt>{activeQuestions.secondaryLabel}</dt><dd>{selectedSecondary}</dd></div>{/if}<div><dt>Briefly describe what is happening.</dt><dd class="preserve-lines">{form.description}</dd></div></dl></section>
+        <section aria-labelledby="review-contact"><div class="review-heading"><h3 id="review-contact">Contact</h3><button type="button" aria-label="Edit contact information" onclick={() => goToStep(3)}>Edit</button></div><dl><div><dt>Full name</dt><dd>{form.fullName}</dd></div><div><dt>Email address</dt><dd>{form.email}</dd></div><div><dt>Phone number</dt><dd>{form.phone}</dd></div>{#if form.preferredContact}<div><dt>Preferred contact method</dt><dd>{choices('Phone', 'Email', 'Either').find((option) => option.value === form.preferredContact)?.label}</dd></div>{/if}{#if form.preferredPeriod}<div><dt>Preferred consultation period</dt><dd>{choices('Morning', 'Afternoon', 'No preference').find((option) => option.value === form.preferredPeriod)?.label}</dd></div>{/if}</dl></section>
       </div>
       {#if submissionState === 'failure'}
         <div class="submission-error" role="alert"><h3>The demonstration could not be completed.</h3><p>Your information has not been sent or stored. Please try again.</p><button type="button" onclick={() => submissionState = 'idle'}>Try Again</button></div>
@@ -314,6 +314,7 @@
   .step-header > p:last-child, .success p { max-width: var(--container-prose); color: var(--muted-foreground); }
   fieldset, .field { display: grid; gap: var(--space-sm); margin: 0 0 var(--space-xl); padding: 0; border: 0; }
   legend, .field > label { margin-block-end: var(--space-sm); font-weight: var(--type-label-weight); }
+  .requirement { color: var(--muted-foreground); font-size: var(--type-body-sm-size); font-weight: var(--type-body-weight); }
   .matter-options { display: grid; gap: var(--space-md); }
   .matter-options label { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-md); border: var(--border-width-hairline) solid var(--border); border-radius: var(--radius-card); padding: var(--space-lg); cursor: pointer; transition: border-color var(--duration-fast) var(--ease-standard), background-color var(--duration-fast) var(--ease-standard); }
   .matter-options label:hover, .matter-options label.checked { border-color: var(--primary); background: var(--surface); }
