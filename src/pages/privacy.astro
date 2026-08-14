@@ -1,0 +1,26 @@
+---
+import PageHero from '@/components/patterns/PageHero.astro';
+import Container from '@/components/layout/Container.astro';
+import Prose from '@/components/layout/Prose.astro';
+import Section from '@/components/layout/Section.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Privacy and Portfolio Disclosure | Hawthorne & Cole"
+  description="Privacy and fictional-project disclosure for the Hawthorne & Cole portfolio demonstration."
+>
+  <PageHero title="Privacy and Portfolio Disclosure" variant="compact" />
+
+  <Section border="top">
+    <Container width="prose">
+      <Prose measure="none">
+        <p>Hawthorne & Cole is a fictional law firm created as a portfolio demonstration for Brian Woodson Web Development.</p>
+        <p>The attorneys, firm history, representative matters, address, phone number, credentials, and legal services described on this website are fictional.</p>
+        <p>This website does not provide legal advice and does not create an attorney-client relationship.</p>
+        <p>The consultation form is a user-interface demonstration only. Visitors should not enter confidential, financial, personal, or legally sensitive information.</p>
+        <p>If analytics are enabled on the demonstration site, they should be limited to basic portfolio traffic measurement and should not collect information submitted through the consultation interface.</p>
+      </Prose>
+    </Container>
+  </Section>
+</BaseLayout>

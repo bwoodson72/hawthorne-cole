@@ -1,0 +1,28 @@
+---
+import PageHero from '@/components/patterns/PageHero.astro';
+import Cluster from '@/components/layout/Cluster.astro';
+import LinkButton from '@/components/ui/LinkButton.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Page Not Found | Hawthorne & Cole"
+  description="The requested page could not be found on the fictional Hawthorne & Cole website."
+>
+  <PageHero
+    eyebrow="404"
+    title="This page isn't part of the record."
+    intro="The page you requested may have moved or may not exist."
+    variant="inverse"
+  >
+    <Cluster slot="actions" space="md">
+      <LinkButton href="/" variant="inverse">Return Home</LinkButton>
+      <LinkButton href="/practice-areas/" variant="secondary" class="error-outline">Explore Practice Areas</LinkButton>
+    </Cluster>
+  </PageHero>
+</BaseLayout>
+
+<style>
+  :global(.error-outline) { border-color: var(--accent); color: var(--inverse-foreground); }
+  :global(.error-outline:hover) { color: var(--accent); }
+</style>
