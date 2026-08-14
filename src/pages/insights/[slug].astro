@@ -11,6 +11,7 @@ import Section from '@/components/layout/Section.astro';
 import Stack from '@/components/layout/Stack.astro';
 import ArticleLayout from '@/layouts/ArticleLayout.astro';
 import { getInsightRelationships } from '@/lib/content/relationships';
+import { articleSchema, breadcrumbSchema } from '@/lib/schema';
 
 interface Props {
   insight: CollectionEntry<'insights'>;
@@ -36,6 +37,14 @@ const relatedInsights = allInsights
     (entry.data.practiceArea.id === insight.data.practiceArea.id || entry.data.author.id === insight.data.author.id),
   )
   .slice(0, 3);
+const schemas = [
+  breadcrumbSchema([
+    { name: 'Home', path: '/' },
+    { name: 'Insights', path: '/insights/' },
+    { name: insight.data.title, path: `/insights/${insight.id}/` },
+  ]),
+  articleSchema(insight, author, practiceArea),
+];
 ---
 
 <ArticleLayout
@@ -45,6 +54,8 @@ const relatedInsights = allInsights
   heading={insight.data.title}
   summary={insight.data.summary}
   hasBody={insight.data.complete}
+  socialImage={insight.data.heroImage}
+  schemas={schemas}
 >
   <Breadcrumb
     slot="breadcrumb"

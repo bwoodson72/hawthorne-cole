@@ -14,6 +14,7 @@ import Section from '@/components/layout/Section.astro';
 import Stack from '@/components/layout/Stack.astro';
 import LinkButton from '@/components/ui/LinkButton.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import { legalServiceSchema } from '@/lib/schema';
 
 const practiceOrder = ['business-litigation', 'contracts', 'commercial-real-estate', 'estate-planning', 'probate'];
 const attorneyOrder = ['elizabeth-hawthorne', 'daniel-cole'];
@@ -66,6 +67,7 @@ const matterDisplayTitles = {
 <BaseLayout
   title="Hawthorne & Cole | Business, Real Estate & Estate Counsel in Fort Worth"
   description="Hawthorne & Cole is a fictional Fort Worth law firm providing business litigation, contract, commercial real estate, estate planning, and probate counsel."
+  schemas={[legalServiceSchema()]}
 >
   <PageHero
     eyebrow="Fort Worth, Texas"
@@ -172,7 +174,7 @@ const matterDisplayTitles = {
               summary={matter.data.summary}
               outcome={matter.data.outcomePreview}
               disclosure={matter.data.disclosure}
-              href={`/representative-matters/${matter.id}/`}
+              href={`/representative-matters/#${matter.id}`}
               variant="editorial"
             />
           ))}

@@ -12,6 +12,7 @@ import Section from '@/components/layout/Section.astro';
 import Stack from '@/components/layout/Stack.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getAttorneyRelationships } from '@/lib/content/relationships';
+import { breadcrumbSchema, personSchema } from '@/lib/schema';
 
 interface Props {
   attorney: CollectionEntry<'attorneys'>;
@@ -28,9 +29,17 @@ export async function getStaticPaths() {
 const { attorney } = Astro.props;
 const { Content } = await render(attorney);
 const { practiceAreas, insights, matters } = await getAttorneyRelationships(attorney);
+const schemas = [
+  breadcrumbSchema([
+    { name: 'Home', path: '/' },
+    { name: 'Attorneys', path: '/attorneys/' },
+    { name: attorney.data.name, path: `/attorneys/${attorney.id}/` },
+  ]),
+  personSchema(attorney, practiceAreas),
+];
 ---
 
-<BaseLayout title={attorney.data.seo.title} description={attorney.data.seo.description ?? attorney.data.intro}>
+<BaseLayout title={attorney.data.seo.title} description={attorney.data.seo.description ?? attorney.data.intro} ogType="profile" schemas={schemas}>
   <header class="profile-hero">
     <Container>
       <Breadcrumb
@@ -121,7 +130,7 @@ const { practiceAreas, insights, matters } = await getAttorneyRelationships(atto
                 summary={matter.data.summary}
                 outcome={matter.data.outcomePreview}
                 disclosure={matter.data.disclosure}
-                href={`/representative-matters/${matter.id}/`}
+                href={`/representative-matters/#${matter.id}`}
                 variant="editorial"
               />
             ))}

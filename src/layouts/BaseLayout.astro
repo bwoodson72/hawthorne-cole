@@ -2,15 +2,35 @@
 import FictionalDisclosure from '@/components/ui/FictionalDisclosure.astro';
 import SiteFooter from '@/components/ui/SiteFooter.astro';
 import SiteHeader from '@/components/ui/SiteHeader.astro';
+import { serializeJsonLd, type JsonLd } from '@/lib/schema';
+import { DEFAULT_SOCIAL_IMAGE, SITE_NAME } from '@/lib/seo/site';
 import '@/styles/global.css';
 
 interface Props {
   title: string;
   description: string;
   bodyClass?: string;
+  canonical?: string;
+  socialImage?: string;
+  socialImageAlt?: string;
+  ogType?: 'website' | 'article' | 'profile';
+  robots?: string;
+  schemas?: JsonLd[];
 }
 
-const { title, description, bodyClass } = Astro.props;
+const {
+  title,
+  description,
+  bodyClass,
+  canonical,
+  socialImage = DEFAULT_SOCIAL_IMAGE,
+  socialImageAlt = SITE_NAME,
+  ogType = 'website',
+  robots = 'noindex, follow',
+  schemas = [],
+} = Astro.props;
+const canonicalUrl = new URL(canonical ?? Astro.url.pathname, Astro.site ?? Astro.url.origin);
+const socialImageUrl = new URL(socialImage, Astro.site ?? Astro.url.origin);
 ---
 
 <!doctype html>
@@ -19,11 +39,25 @@ const { title, description, bodyClass } = Astro.props;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
-    <meta name="robots" content="noindex, nofollow" />
+    <meta name="robots" content={robots} />
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={socialImageUrl} />
+    <meta property="og:image:alt" content={socialImageAlt} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImageUrl} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
     <title>{title}</title>
+    {schemas.map((schema) => <script type="application/ld+json" is:inline set:html={serializeJsonLd(schema)} />)}
     <slot name="head" />
   </head>
   <body class={bodyClass}>

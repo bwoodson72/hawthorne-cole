@@ -4,6 +4,7 @@ import Prose from '@/components/layout/Prose.astro';
 import Section from '@/components/layout/Section.astro';
 import Stack from '@/components/layout/Stack.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import type { JsonLd } from '@/lib/schema';
 
 interface Props {
   title: string;
@@ -12,12 +13,14 @@ interface Props {
   heading: string;
   summary: string;
   hasBody?: boolean;
+  socialImage?: string;
+  schemas?: JsonLd[];
 }
 
-const { title, description, eyebrow, heading, summary, hasBody = true } = Astro.props;
+const { title, description, eyebrow, heading, summary, hasBody = true, socialImage, schemas = [] } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} ogType="article" socialImage={socialImage} schemas={schemas}>
   <article>
     <Section spacing="compact" border="bottom">
       <Container width="prose">

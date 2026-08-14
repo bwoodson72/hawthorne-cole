@@ -3,6 +3,7 @@ import { getCollection, getEntries, render, type CollectionEntry } from 'astro:c
 import AttorneyCard from '@/components/patterns/AttorneyCard.astro';
 import ConsultationCTA from '@/components/patterns/ConsultationCTA.astro';
 import FaqAccordion from '@/components/patterns/FaqAccordion.astro';
+import MatterCard from '@/components/patterns/MatterCard.astro';
 import PageHero from '@/components/patterns/PageHero.astro';
 import RelatedContent from '@/components/patterns/RelatedContent.astro';
 import SectionHeading from '@/components/patterns/SectionHeading.astro';
@@ -14,6 +15,7 @@ import Stack from '@/components/layout/Stack.astro';
 import LinkButton from '@/components/ui/LinkButton.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getPracticeAreaRelationships } from '@/lib/content/relationships';
+import { breadcrumbSchema, faqSchema } from '@/lib/schema';
 
 interface Props {
   practiceArea: CollectionEntry<'practiceAreas'>;
@@ -29,7 +31,7 @@ export async function getStaticPaths() {
 
 const { practiceArea } = Astro.props;
 const { Content } = await render(practiceArea);
-const { attorneys, insights } = await getPracticeAreaRelationships(practiceArea);
+const { attorneys, insights, matters } = await getPracticeAreaRelationships(practiceArea);
 const attorneyCards = await Promise.all(
   attorneys.map(async (attorney) => ({
     attorney,
@@ -48,11 +50,20 @@ const sectionLabels = {
 
 const labels = sectionLabels[practiceArea.id as keyof typeof sectionLabels] ?? { services: 'Services', approach: 'Our Approach' };
 const businessLitigationCta = practiceArea.id === 'business-litigation';
+const schemas = [
+  breadcrumbSchema([
+    { name: 'Home', path: '/' },
+    { name: 'Practice Areas', path: '/practice-areas/' },
+    { name: practiceArea.data.title, path: `/practice-areas/${practiceArea.id}/` },
+  ]),
+  faqSchema(practiceArea),
+];
 ---
 
 <BaseLayout
   title={practiceArea.data.seo?.title ?? `${practiceArea.data.title} | Hawthorne & Cole`}
   description={practiceArea.data.seo?.description ?? practiceArea.data.summary}
+  schemas={schemas}
 >
   <PageHero
     eyebrow={practiceArea.data.eyebrow}
@@ -80,6 +91,29 @@ const businessLitigationCta = practiceArea.id === 'business-litigation';
       </div>
     </Container>
   </Section>
+
+  {matters.length > 0 && (
+    <Section tone="muted" border="top">
+      <Container>
+        <Stack space="xl">
+          <SectionHeading eyebrow="Experience" heading="Representative Matters" />
+          <div class="matter-grid">
+            {matters.map((matter) => (
+              <MatterCard
+                title={matter.data.title}
+                category={matter.data.category}
+                summary={matter.data.summary}
+                outcome={matter.data.outcomePreview}
+                disclosure={matter.data.disclosure}
+                href={`/representative-matters/#${matter.id}`}
+                variant="editorial"
+              />
+            ))}
+          </div>
+        </Stack>
+      </Container>
+    </Section>
+  )}
 
   <Section tone="muted" border="both">
     <Container>
@@ -154,10 +188,11 @@ const businessLitigationCta = practiceArea.id === 'business-litigation';
   .services-list { display: grid; gap: 0; margin: 0; padding: 0; border-block-end: var(--border-width-hairline) solid var(--border); list-style: none; }
   .services-list li { border-block-start: var(--border-width-hairline) solid var(--border); padding-block: var(--space-md); text-transform: capitalize; }
   .section-label { margin: 0; color: var(--primary); font-size: var(--type-label-size); font-weight: var(--type-label-weight); letter-spacing: var(--type-label-tracking); line-height: var(--type-label-line-height); text-transform: uppercase; }
-  .attorney-grid { display: grid; gap: var(--content-gap); }
+  .attorney-grid, .matter-grid { display: grid; gap: var(--content-gap); }
   @media (min-width: 48rem) {
     .services-layout, .approach-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); align-items: start; }
     .services-list { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--content-gap); }
     .attorney-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .matter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
 </style>

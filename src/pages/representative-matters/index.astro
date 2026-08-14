@@ -44,7 +44,7 @@ const matterStudies = await Promise.all(
     {matterStudies.map(({ matter, practiceArea }, index) => (
       <Section tone={index % 2 === 0 ? 'default' : 'muted'} border="top">
         <Container>
-          <article class="matter-study">
+          <article class="matter-study" id={matter.id}>
             <header class="matter-study__header">
               <p class="matter-study__category">{matter.data.category}</p>
               <h2>{matter.data.title}</h2>

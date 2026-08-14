@@ -7,6 +7,7 @@ import Section from '@/components/layout/Section.astro';
 import Stack from '@/components/layout/Stack.astro';
 import LinkButton from '@/components/ui/LinkButton.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import { organizationSchema } from '@/lib/schema';
 
 const values = [
   { name: 'Clarity', description: 'Legal complexity should not become communication complexity.' },
@@ -20,6 +21,7 @@ const values = [
 <BaseLayout
   title="About Hawthorne & Cole | Fort Worth Attorneys"
   description="Learn about the fictional Hawthorne & Cole law firm and its approach to business, real estate, estate planning, litigation, and probate matters."
+  schemas={[organizationSchema()]}
 >
   <PageHero
     eyebrow="About the Firm"
