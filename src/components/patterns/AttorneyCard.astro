@@ -1,4 +1,6 @@
 ---
+import ImageSlot from '@/components/ui/ImageSlot.astro';
+
 interface Portrait { src: string; alt: string; width: number; height: number; }
 interface Props {
   name: string;
@@ -8,13 +10,14 @@ interface Props {
   href: string;
   linkLabel?: string;
   portrait?: Portrait;
+  expectedPortraitFilename?: string;
   variant?: 'standard' | 'featured';
 }
-const { name, title, focusAreas, bio, href, linkLabel, portrait, variant = 'standard' } = Astro.props;
+const { name, title, focusAreas, bio, href, linkLabel, portrait, expectedPortraitFilename = 'attorney-portrait.webp', variant = 'standard' } = Astro.props;
 ---
 <article class:list={['attorney', `attorney--${variant}`]}>
   <div class="attorney__portrait">
-    {portrait ? <img src={portrait.src} alt={portrait.alt} width={portrait.width} height={portrait.height} loading="lazy" decoding="async" /> : <span aria-hidden="true">{name.split(' ').map((part) => part[0]).join('')}</span>}
+    {portrait ? <img src={portrait.src} alt={portrait.alt} width={portrait.width} height={portrait.height} loading="lazy" decoding="async" /> : <ImageSlot label={`${name} portrait`} expectedFilename={expectedPortraitFilename} ratio="portrait" />}
   </div>
   <div class="attorney__content">
     <p class="attorney__role">{title}</p>
@@ -27,7 +30,7 @@ const { name, title, focusAreas, bio, href, linkLabel, portrait, variant = 'stan
 <style>
   .attorney { display: grid; gap: var(--space-xl); }
   .attorney--featured { border-block-start: var(--border-width-hairline) solid var(--accent); padding-block-start: var(--card-padding); }
-  .attorney__portrait { display: grid; aspect-ratio: 4 / 5; place-items: center; overflow: hidden; background: var(--surface-muted); color: var(--primary); font-family: var(--font-family-display), serif; font-size: var(--type-heading-2-size); }
+  .attorney__portrait { display: grid; aspect-ratio: 4 / 5; overflow: hidden; background: var(--surface-muted); }
   .attorney__portrait img { width: 100%; height: 100%; object-fit: cover; }
   .attorney__content { display: grid; gap: var(--space-md); align-content: start; }
   .attorney__role, .attorney h3, .attorney__focus, .attorney__bio { margin: 0; }

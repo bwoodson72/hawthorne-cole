@@ -1,16 +1,238 @@
 ---
+import { getCollection } from 'astro:content';
+import AttorneyCard from '@/components/patterns/AttorneyCard.astro';
+import ConsultationCTA from '@/components/patterns/ConsultationCTA.astro';
+import InsightCard from '@/components/patterns/InsightCard.astro';
+import MatterCard from '@/components/patterns/MatterCard.astro';
+import PageHero from '@/components/patterns/PageHero.astro';
+import PracticeAreaCard from '@/components/patterns/PracticeAreaCard.astro';
+import SectionHeading from '@/components/patterns/SectionHeading.astro';
+import StatStrip from '@/components/patterns/StatStrip.astro';
+import Cluster from '@/components/layout/Cluster.astro';
 import Container from '@/components/layout/Container.astro';
 import Section from '@/components/layout/Section.astro';
+import Stack from '@/components/layout/Stack.astro';
+import LinkButton from '@/components/ui/LinkButton.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
+
+const practiceOrder = ['business-litigation', 'contracts', 'commercial-real-estate', 'estate-planning', 'probate'];
+const attorneyOrder = ['elizabeth-hawthorne', 'daniel-cole'];
+const matterOrder = [
+  'preserving-a-viable-company-during-an-ownership-dispute',
+  'restructuring-a-property-acquisition-after-lease-inconsistencies-surfaced',
+  'separating-management-succession-from-family-inheritance',
+];
+const insightOrder = [
+  'what-to-do-when-business-partnership-dispute-begins',
+  'five-issues-before-signing-commercial-lease',
+  'estate-planning-for-business-owners',
+];
+
+const [allPracticeAreas, allAttorneys, allMatters, allInsights] = await Promise.all([
+  getCollection('practiceAreas'),
+  getCollection('attorneys'),
+  getCollection('matters'),
+  getCollection('insights'),
+]);
+
+const byOrder = <T extends { id: string }>(entries: T[], order: string[]) =>
+  order.map((id) => entries.find((entry) => entry.id === id)).filter((entry): entry is T => Boolean(entry));
+
+const practiceAreas = byOrder(allPracticeAreas, practiceOrder);
+const attorneys = byOrder(allAttorneys, attorneyOrder);
+const matters = byOrder(allMatters, matterOrder);
+const insights = byOrder(allInsights, insightOrder);
+
+const attorneyDisplay = {
+  'elizabeth-hawthorne': {
+    focusAreas: ['Business Litigation', 'Contract Disputes', 'Probate Disputes'],
+    linkLabel: 'Meet Elizabeth',
+    portrait: 'elizabeth-hawthorne-portrait.webp',
+  },
+  'daniel-cole': {
+    focusAreas: ['Commercial Real Estate', 'Estate Planning', 'Business Succession'],
+    linkLabel: 'Meet Daniel',
+    portrait: 'daniel-cole-portrait.webp',
+  },
+} as const;
+
+const matterDisplayTitles = {
+  'preserving-a-viable-company-during-an-ownership-dispute': 'Ownership dispute threatening the future of a regional service company',
+  'restructuring-a-property-acquisition-after-lease-inconsistencies-surfaced': 'Acquisition of an occupied commercial property with unresolved lease issues',
+  'separating-management-succession-from-family-inheritance': 'Succession planning for a family-owned business',
+} as const;
 ---
 
 <BaseLayout
   title="Hawthorne & Cole | Business, Real Estate & Estate Counsel in Fort Worth"
   description="Hawthorne & Cole is a fictional Fort Worth law firm providing business litigation, contract, commercial real estate, estate planning, and probate counsel."
 >
-  <Section>
+  <PageHero
+    eyebrow="Fort Worth, Texas"
+    title="Counsel for decisions that carry consequences."
+    intro={[
+      'Business disputes, property transactions, contracts, and estate matters rarely stay confined to a single document or decision. They affect companies, assets, families, and what happens next.',
+      'Hawthorne & Cole provides deliberate legal counsel for clients who need to understand the risks, protect what matters, and move forward with a clear strategy.',
+    ]}
+  >
+    <Cluster slot="actions" space="md">
+      <LinkButton href="/consultation/">Schedule a Consultation</LinkButton>
+      <LinkButton href="/practice-areas/" variant="secondary">Explore Practice Areas</LinkButton>
+    </Cluster>
+    <p class="hero-practices">Business litigation · Contracts · Commercial real estate · Estate planning · Probate</p>
+  </PageHero>
+
+  <StatStrip
+    items={[
+      { value: '25+ Years', label: 'Combined legal experience' },
+      { value: 'Fort Worth Based', label: 'Serving clients across North Texas' },
+      { value: 'Direct Counsel', label: 'Work directly with the attorney handling your matter' },
+    ]}
+  />
+
+  <Section id="practice-areas">
     <Container>
-      <h1 class="font-display text-heading-1">Hawthorne &amp; Cole</h1>
+      <Stack space="xl">
+        <SectionHeading
+          eyebrow="Practice Areas"
+          heading="Legal counsel built around the decision in front of you."
+          intro="Some matters begin with a dispute. Others begin with an opportunity, a transaction, or the need to plan ahead. Our work is organized around five areas where sound legal advice can protect a client's position before small uncertainties become expensive problems."
+        />
+        <div class="practice-index">
+          {practiceAreas.map((area, index) => (
+            <PracticeAreaCard
+              title={area.data.title}
+              summary={area.data.summary}
+              href={`/practice-areas/${area.id}/`}
+              linkLabel={`Explore ${area.data.title}`}
+              index={index + 1}
+              variant={index === 0 ? 'featured' : 'editorial'}
+            />
+          ))}
+        </div>
+      </Stack>
     </Container>
   </Section>
+
+  <Section tone="inverse" spacing="generous">
+    <Container>
+      <div class="approach-layout">
+        <SectionHeading eyebrow="Our Approach" heading="Good counsel should make the path forward clearer." tone="inverse" />
+        <Stack space="lg" class="approach-copy">
+          <p>The law may define the available options, but it does not decide which option makes the most sense for a particular client. That requires understanding the business, property, family, and long-term consequences surrounding the legal issue.</p>
+          <p>Our role is to identify the risks that matter, explain them plainly, and help clients make decisions with a realistic understanding of what comes next.</p>
+          <p>That means avoiding unnecessary conflict when a practical resolution is available—and preparing thoroughly when the situation requires a firmer response.</p>
+          <blockquote>The objective is not simply to win an argument. It is to put the client in the strongest practical position available.</blockquote>
+        </Stack>
+      </div>
+    </Container>
+  </Section>
+
+  <Section>
+    <Container>
+      <Stack space="xl">
+        <SectionHeading
+          eyebrow="Attorneys"
+          heading="Experienced counsel without unnecessary layers."
+          intro="Clients work directly with the attorneys responsible for understanding their matter, developing the strategy, and communicating what happens next."
+        />
+        <div class="attorney-grid">
+          {attorneys.map((attorney) => {
+            const display = attorneyDisplay[attorney.id as keyof typeof attorneyDisplay];
+            return display && (
+              <AttorneyCard
+                name={attorney.data.name}
+                title={attorney.data.title}
+                focusAreas={[...display.focusAreas]}
+                bio={attorney.data.shortBio}
+                href={`/attorneys/${attorney.id}/`}
+                linkLabel={display.linkLabel}
+                expectedPortraitFilename={display.portrait}
+              />
+            );
+          })}
+        </div>
+      </Stack>
+    </Container>
+  </Section>
+
+  <Section tone="muted" border="both">
+    <Container>
+      <Stack space="xl">
+        <SectionHeading
+          eyebrow="Representative Matters"
+          heading="Strategy measured by the client's real objective."
+          intro="Legal matters are rarely successful simply because a document was drafted or an argument was won. These fictional examples illustrate the kinds of business and personal objectives the firm is designed to address."
+        />
+        <div class="matter-grid">
+          {matters.map((matter) => (
+            <MatterCard
+              title={matterDisplayTitles[matter.id as keyof typeof matterDisplayTitles] ?? matter.data.title}
+              category={matter.data.category}
+              summary={matter.data.summary}
+              outcome={matter.data.outcomePreview}
+              disclosure={matter.data.disclosure}
+              href={`/representative-matters/${matter.id}/`}
+              variant="editorial"
+            />
+          ))}
+        </div>
+        <LinkButton href="/representative-matters/" variant="text">View Representative Matters <span aria-hidden="true">→</span></LinkButton>
+      </Stack>
+    </Container>
+  </Section>
+
+  <Section>
+    <Container>
+      <Stack space="xl">
+        <SectionHeading
+          eyebrow="Insights"
+          heading="Perspective before the decision."
+          intro="Practical guidance on disputes, contracts, property, succession, and estate matters affecting businesses and families in Texas."
+        />
+        <div class="insight-grid">
+          {insights.map((insight, index) => {
+            const author = allAttorneys.find((entry) => entry.id === insight.data.author.id);
+            return (
+              <InsightCard
+                title={insight.data.title}
+                summary={insight.data.summary}
+                category={insight.data.category}
+                author={author?.data.name ?? 'Hawthorne & Cole'}
+                href={`/insights/${insight.id}/`}
+                publishedDate={insight.data.publishedDate}
+                variant={index === 0 ? 'featured' : 'standard'}
+              />
+            );
+          })}
+        </div>
+        <LinkButton href="/insights/" variant="text">View All Insights <span aria-hidden="true">→</span></LinkButton>
+      </Stack>
+    </Container>
+  </Section>
+
+  <ConsultationCTA
+    variant="closing"
+    eyebrow="Start a Conversation"
+    heading="A difficult decision is easier when you understand the consequences."
+    body="If you are facing a business dispute, planning a significant transaction, or trying to protect what happens next, the first step is understanding the legal and practical options available."
+    label="Schedule a Consultation"
+    secondaryText="Or call (817) 555-0148"
+    secondaryHref="tel:+18175550148"
+  />
 </BaseLayout>
+
+<style>
+  .hero-practices { max-width: var(--container-content); margin: 0; padding-block-start: var(--space-lg); border-block-start: var(--border-width-hairline) solid var(--border); color: var(--muted-foreground); font-size: var(--type-body-sm-size); line-height: var(--type-body-sm-line-height); }
+  .practice-index { display: grid; }
+  .approach-layout { display: grid; gap: var(--content-gap); }
+  .approach-copy { max-width: var(--container-prose); color: var(--inverse-muted-foreground); font-size: var(--type-body-lg-size); line-height: var(--type-body-lg-line-height); }
+  .approach-copy p, .approach-copy blockquote { margin: 0; }
+  .approach-copy blockquote { border-inline-start: var(--border-width-emphasis) solid var(--accent); padding-inline-start: var(--space-lg); color: var(--inverse-foreground); font-family: var(--font-family-display), serif; font-size: var(--type-heading-4-size); line-height: var(--type-body-lg-line-height); }
+  .attorney-grid, .matter-grid, .insight-grid { display: grid; gap: var(--content-gap); }
+  @media (min-width: 48rem) {
+    .approach-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
+    .attorney-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .matter-grid, .insight-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+</style>

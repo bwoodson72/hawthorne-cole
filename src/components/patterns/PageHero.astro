@@ -5,7 +5,7 @@ import Stack from '@/components/layout/Stack.astro';
 interface Props {
   eyebrow?: string;
   title: string;
-  intro?: string;
+  intro?: string | string[];
   variant?: 'default' | 'compact' | 'inverse';
   align?: 'start' | 'center';
 }
@@ -25,7 +25,7 @@ const {
     <Stack space="lg" class="page-hero__content">
       {eyebrow && <p class="page-hero__eyebrow">{eyebrow}</p>}
       <h1>{title}</h1>
-      {intro && <p class="page-hero__intro">{intro}</p>}
+      {intro && (Array.isArray(intro) ? intro.map((paragraph) => <p class="page-hero__intro">{paragraph}</p>) : <p class="page-hero__intro">{intro}</p>)}
       {Astro.slots.has('actions') && <div class="page-hero__actions"><slot name="actions" /></div>}
       <slot />
     </Stack>

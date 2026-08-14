@@ -1,0 +1,23 @@
+---
+interface Props {
+  label: string;
+  expectedFilename: string;
+  ratio?: 'portrait' | 'landscape' | 'wide';
+}
+
+const { label, expectedFilename, ratio = 'landscape' } = Astro.props;
+---
+
+<div class:list={['image-slot', `image-slot--${ratio}`]} role="img" aria-label={`${label}; photography forthcoming`} data-expected-filename={expectedFilename}>
+  <span>{label}</span>
+  <small>Photography reserved</small>
+</div>
+
+<style>
+  .image-slot { display: grid; width: 100%; height: 100%; place-content: center; gap: var(--space-xs); border: var(--border-width-hairline) solid var(--border); background: var(--surface-muted); padding: var(--space-lg); color: var(--muted-foreground); text-align: center; }
+  .image-slot--portrait { aspect-ratio: 4 / 5; }
+  .image-slot--landscape { aspect-ratio: 3 / 2; }
+  .image-slot--wide { aspect-ratio: 16 / 9; }
+  .image-slot span { color: var(--foreground); font-family: var(--font-family-display), serif; font-size: var(--type-heading-4-size); line-height: var(--type-heading-4-line-height); }
+  .image-slot small { font-size: var(--type-caption-size); font-weight: var(--type-caption-weight); letter-spacing: var(--type-caption-tracking); line-height: var(--type-caption-line-height); text-transform: uppercase; }
+</style>

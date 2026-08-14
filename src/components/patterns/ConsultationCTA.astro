@@ -12,6 +12,7 @@ interface Props {
   label?: string;
   variant?: 'banner' | 'closing';
   secondaryText?: string;
+  secondaryHref?: string;
 }
 
 const {
@@ -22,6 +23,7 @@ const {
   label = 'Schedule a Consultation',
   variant = 'banner',
   secondaryText,
+  secondaryHref,
 } = Astro.props;
 ---
 
@@ -35,7 +37,7 @@ const {
       </Stack>
       <Cluster>
         <a class="consultation-button" href={href}>{label}</a>
-        {secondaryText && <p class="consultation-secondary">{secondaryText}</p>}
+        {secondaryText && <p class="consultation-secondary">{secondaryHref ? <a href={secondaryHref}>{secondaryText}</a> : secondaryText}</p>}
       </Cluster>
     </div>
   </Container>
@@ -60,6 +62,11 @@ const {
     margin: 0;
     color: var(--inverse-muted-foreground);
     font-size: var(--type-body-sm-size);
+  }
+
+  .consultation-secondary a {
+    color: inherit;
+    text-underline-offset: var(--space-xs);
   }
 
   .consultation-eyebrow {

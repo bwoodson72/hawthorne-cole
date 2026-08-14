@@ -1,0 +1,26 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = Omit<HTMLAttributes<'a'>, 'class'> & {
+  href: string;
+  variant?: 'primary' | 'secondary' | 'inverse' | 'text';
+  class?: string;
+};
+
+const { href, variant = 'primary', class: className, ...attributes } = Astro.props;
+---
+
+<a {...attributes} href={href} class:list={['link-button', `link-button--${variant}`, className]}>
+  <slot />
+</a>
+
+<style>
+  .link-button { display: inline-flex; min-height: var(--control-height); align-items: center; justify-content: center; border: var(--border-width-hairline) solid transparent; border-radius: var(--radius-control); padding-inline: var(--space-lg); font-size: var(--type-body-sm-size); font-weight: var(--type-label-weight); line-height: var(--type-label-line-height); text-align: center; text-decoration: none; transition: background-color var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard); }
+  .link-button--primary { border-color: var(--primary); background: var(--primary); color: var(--primary-foreground); }
+  .link-button--primary:hover { background: var(--primary-accent); }
+  .link-button--secondary { border-color: var(--border); color: var(--foreground); }
+  .link-button--secondary:hover { border-color: var(--primary); color: var(--primary); }
+  .link-button--inverse { border-color: var(--accent); background: var(--accent); color: var(--accent-foreground); }
+  .link-button--inverse:hover { background: transparent; color: var(--inverse-foreground); }
+  .link-button--text { min-height: auto; padding-inline: 0; color: var(--primary); text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: var(--space-xs); }
+</style>

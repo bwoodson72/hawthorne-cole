@@ -105,6 +105,7 @@
   --container-prose: var(--layout-width-prose);
   --container-narrow: var(--layout-width-narrow);
   --header-height: 5rem;
+  --control-height: 2.75rem;
 
   /* Interface layering tokens. */
   --layer-dropdown: 20;
