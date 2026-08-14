@@ -57,9 +57,3 @@ That includes:
 - what litigation is likely to require if negotiation fails
 
 The objective is to make escalation a strategy rather than a reflex.
-
-## A business dispute becomes more expensive when the strategy comes too late.
-
-If a conflict is beginning to affect ownership, operations, money, or important business relationships, early legal analysis can clarify the available options.
-
-**Schedule a Consultation**

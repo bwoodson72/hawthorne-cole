@@ -37,9 +37,9 @@
   --danger: var(--hc-oxblood-600);
   --danger-foreground: var(--hc-ivory-50);
 
-  /* Font-family tokens. Font files will be added with the asset system. */
-  --font-family-display: "Source Serif 4", "Iowan Old Style", "Palatino Linotype", serif;
-  --font-family-interface: "Inter", "Helvetica Neue", Arial, sans-serif;
+  /* Font-family tokens. Variable fonts provide the required weights locally. */
+  --font-family-display: "Source Serif 4 Variable", "Source Serif 4", "Iowan Old Style", "Palatino Linotype", serif;
+  --font-family-interface: "Inter Variable", "Inter", "Helvetica Neue", Arial, sans-serif;
 
   /* Semantic typography tokens. */
   --type-display-size: clamp(3.5rem, 8vw, 7.5rem);
