@@ -1,0 +1,101 @@
+---
+import Cluster from '@/components/layout/Cluster.astro';
+import Container from '@/components/layout/Container.astro';
+import Section from '@/components/layout/Section.astro';
+import Stack from '@/components/layout/Stack.astro';
+
+interface Props {
+  eyebrow?: string;
+  heading?: string;
+  body?: string;
+  href?: string;
+  label?: string;
+}
+
+const {
+  eyebrow = 'Start a Conversation',
+  heading = 'Understand the options before choosing the next move.',
+  body = 'Tell us what you are facing and what you are trying to accomplish.',
+  href = '/consultation/',
+  label = 'Schedule a Consultation',
+} = Astro.props;
+---
+
+<Section tone="inverse" spacing="compact" border="both">
+  <Container width="content">
+    <div class="consultation-layout">
+      <Stack space="md">
+        <p class="consultation-eyebrow">{eyebrow}</p>
+        <h2 class="consultation-heading">{heading}</h2>
+        <p class="consultation-body">{body}</p>
+      </Stack>
+      <Cluster>
+        <a class="consultation-button" href={href}>{label}</a>
+      </Cluster>
+    </div>
+  </Container>
+</Section>
+
+<style>
+  .consultation-layout {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--content-gap);
+    align-items: end;
+  }
+
+  .consultation-eyebrow,
+  .consultation-heading,
+  .consultation-body {
+    margin: 0;
+  }
+
+  .consultation-eyebrow {
+    color: var(--accent);
+    font-size: var(--type-label-size);
+    font-weight: var(--type-label-weight);
+    letter-spacing: var(--type-label-tracking);
+    line-height: var(--type-label-line-height);
+    text-transform: uppercase;
+  }
+
+  .consultation-heading {
+    max-width: var(--container-content);
+    font-size: var(--type-heading-2-size);
+    font-weight: var(--type-heading-2-weight);
+    letter-spacing: var(--type-heading-2-tracking);
+    line-height: var(--type-heading-2-line-height);
+  }
+
+  .consultation-body {
+    max-width: var(--container-narrow);
+    color: var(--inverse-muted-foreground);
+    font-size: var(--type-body-lg-size);
+    line-height: var(--type-body-lg-line-height);
+  }
+
+  .consultation-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: var(--border-width-hairline) solid var(--accent);
+    border-radius: var(--radius-control);
+    background: var(--accent);
+    padding: var(--space-sm) var(--space-lg);
+    color: var(--accent-foreground);
+    font-size: var(--type-body-sm-size);
+    font-weight: var(--type-label-weight);
+    line-height: var(--type-label-line-height);
+    text-align: center;
+    text-decoration: none;
+    transition:
+      background-color var(--duration-fast) var(--ease-standard),
+      color var(--duration-fast) var(--ease-standard);
+  }
+
+  .consultation-button:hover {
+    background: transparent;
+    color: var(--inverse-foreground);
+  }
+</style>

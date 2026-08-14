@@ -1,0 +1,62 @@
+---
+import FictionalDisclosure from '@/components/ui/FictionalDisclosure.astro';
+import SiteFooter from '@/components/ui/SiteFooter.astro';
+import SiteHeader from '@/components/ui/SiteHeader.astro';
+import '@/styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  bodyClass?: string;
+}
+
+const { title, description, bodyClass } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <title>{title}</title>
+    <slot name="head" />
+  </head>
+  <body class={bodyClass}>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <FictionalDisclosure />
+    <SiteHeader />
+    <main id="main-content" tabindex="-1">
+      <slot />
+    </main>
+    <SiteFooter />
+  </body>
+</html>
+
+<style>
+  .skip-link {
+    position: fixed;
+    z-index: var(--layer-skip-link);
+    inset-block-start: var(--space-md);
+    inset-inline-start: var(--gutter);
+    /* A percentage translation keeps the link hidden regardless of its text size. */
+    transform: translateY(-200%);
+    border: var(--border-width-emphasis) solid var(--outline);
+    border-radius: var(--radius-control);
+    background: var(--background);
+    padding: var(--space-sm) var(--space-md);
+    color: var(--foreground);
+    font-size: var(--type-body-sm-size);
+    font-weight: var(--type-label-weight);
+    text-decoration: none;
+    transition: transform var(--duration-fast) var(--ease-standard);
+  }
+
+  .skip-link:focus {
+    transform: translateY(0);
+  }
+</style>

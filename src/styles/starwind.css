@@ -32,6 +32,7 @@
   --color-outline: var(--outline);
   --color-inverse: var(--inverse);
   --color-inverse-foreground: var(--inverse-foreground);
+  --color-inverse-muted-foreground: var(--inverse-muted-foreground);
   --color-danger: var(--danger);
   --color-danger-foreground: var(--danger-foreground);
 

@@ -1,0 +1,72 @@
+---
+import Container from '@/components/layout/Container.astro';
+import Prose from '@/components/layout/Prose.astro';
+import Section from '@/components/layout/Section.astro';
+import Stack from '@/components/layout/Stack.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  eyebrow: string;
+  heading: string;
+  summary: string;
+}
+
+const { title, description, eyebrow, heading, summary } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <article>
+    <Section spacing="compact" border="bottom">
+      <Container width="prose">
+        <Stack space="lg">
+          <p class="article-eyebrow">{eyebrow}</p>
+          <h1 class="article-heading">{heading}</h1>
+          <p class="article-summary">{summary}</p>
+          <slot name="meta" />
+        </Stack>
+      </Container>
+    </Section>
+
+    <Section>
+      <Container width="prose">
+        <Prose measure="none">
+          <slot />
+        </Prose>
+      </Container>
+    </Section>
+  </article>
+
+  <slot name="after" />
+</BaseLayout>
+
+<style>
+  .article-eyebrow,
+  .article-heading,
+  .article-summary {
+    margin: 0;
+  }
+
+  .article-eyebrow {
+    color: var(--primary);
+    font-size: var(--type-label-size);
+    font-weight: var(--type-label-weight);
+    letter-spacing: var(--type-label-tracking);
+    line-height: var(--type-label-line-height);
+    text-transform: uppercase;
+  }
+
+  .article-heading {
+    font-size: var(--type-heading-1-size);
+    font-weight: var(--type-heading-1-weight);
+    letter-spacing: var(--type-heading-1-tracking);
+    line-height: var(--type-heading-1-line-height);
+  }
+
+  .article-summary {
+    color: var(--muted-foreground);
+    font-size: var(--type-body-lg-size);
+    line-height: var(--type-body-lg-line-height);
+  }
+</style>

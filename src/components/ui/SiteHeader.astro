@@ -1,0 +1,391 @@
+---
+import Drawer from '@starwind-ui/astro/drawer';
+import NavigationMenu from '@starwind-ui/astro/navigation-menu';
+import Container from '@/components/layout/Container.astro';
+import { practiceAreaLinks, primaryLinks } from '@/lib/navigation';
+
+const currentPath = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === '/' ? currentPath === href : currentPath.startsWith(href);
+const isPracticeAreaActive = currentPath.startsWith('/practice-areas/');
+---
+
+<header class="hc-site-header border-b border-border bg-background">
+  <Container class="header-bar flex items-center justify-between gap-lg">
+    <a class="wordmark" href="/" aria-label="Hawthorne and Cole home">
+      Hawthorne <span aria-hidden="true">&amp;</span> Cole
+    </a>
+
+    <NavigationMenu.Root class="hidden lg:block" aria-label="Primary navigation">
+      <NavigationMenu.List class="desktop-nav-list">
+        <NavigationMenu.Item value="practice-areas" class="relative">
+          <NavigationMenu.Trigger class="nav-link" data-active={isPracticeAreaActive ? '' : undefined}>
+            Practice Areas
+            <span class="menu-chevron" aria-hidden="true">⌄</span>
+          </NavigationMenu.Trigger>
+          <NavigationMenu.Content class="practice-menu">
+            <ul class="practice-menu-list">
+              <li>
+                <NavigationMenu.Link
+                  href="/practice-areas/"
+                  active={currentPath === '/practice-areas/'}
+                  class="practice-menu-link practice-menu-index"
+                >
+                  View All Practice Areas
+                </NavigationMenu.Link>
+              </li>
+              {practiceAreaLinks.map((item) => (
+                <li>
+                  <NavigationMenu.Link
+                    href={item.href}
+                    active={isActive(item.href)}
+                    class="practice-menu-link"
+                  >
+                    {item.label}
+                  </NavigationMenu.Link>
+                </li>
+              ))}
+            </ul>
+          </NavigationMenu.Content>
+        </NavigationMenu.Item>
+
+        {primaryLinks.map((item) => (
+          <NavigationMenu.Item>
+            <NavigationMenu.Link
+              href={item.href}
+              active={isActive(item.href)}
+              class="nav-link"
+            >
+              {item.label}
+            </NavigationMenu.Link>
+          </NavigationMenu.Item>
+        ))}
+      </NavigationMenu.List>
+    </NavigationMenu.Root>
+
+    <a class="consultation-link hidden lg:inline-flex" href="/consultation/">
+      Schedule a Consultation
+    </a>
+
+    <Drawer.Root class="lg:hidden">
+      <Drawer.Trigger class="menu-trigger" aria-label="Open navigation menu">
+        <span aria-hidden="true">Menu</span>
+      </Drawer.Trigger>
+      <Drawer.Portal>
+        <Drawer.Backdrop class="mobile-backdrop" />
+        <Drawer.Viewport class="mobile-viewport">
+          <Drawer.Popup class="mobile-drawer" side="right">
+            <div class="mobile-drawer-header">
+              <div>
+                <Drawer.Title class="mobile-drawer-title">Navigation</Drawer.Title>
+                <Drawer.Description class="sr-only">
+                  Hawthorne and Cole site navigation
+                </Drawer.Description>
+              </div>
+              <Drawer.Close class="menu-close" aria-label="Close navigation menu">
+                <span aria-hidden="true">Close</span>
+              </Drawer.Close>
+            </div>
+
+            <nav class="mobile-nav" aria-label="Mobile navigation">
+              <div class="mobile-nav-group">
+                <a
+                  class="mobile-nav-heading"
+                  href="/practice-areas/"
+                  aria-current={currentPath === '/practice-areas/' ? 'page' : undefined}
+                >
+                  Practice Areas
+                </a>
+                <ul class="mobile-practice-list">
+                  {practiceAreaLinks.map((item) => (
+                    <li>
+                      <a
+                        class="mobile-nav-link"
+                        href={item.href}
+                        aria-current={isActive(item.href) ? 'page' : undefined}
+                      >
+                        {item.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <ul class="mobile-primary-list">
+                {primaryLinks.map((item) => (
+                  <li>
+                    <a
+                      class="mobile-nav-heading"
+                      href={item.href}
+                      aria-current={isActive(item.href) ? 'page' : undefined}
+                    >
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+
+              <a class="consultation-link mobile-consultation" href="/consultation/">
+                Schedule a Consultation
+              </a>
+            </nav>
+          </Drawer.Popup>
+        </Drawer.Viewport>
+      </Drawer.Portal>
+    </Drawer.Root>
+  </Container>
+</header>
+
+<style is:global>
+  .hc-site-header .header-bar {
+    min-height: var(--header-height);
+  }
+
+  .hc-site-header .wordmark {
+    flex: none;
+    color: var(--foreground);
+    font-family: var(--font-family-display), serif;
+    font-size: var(--type-heading-4-size);
+    font-weight: var(--type-heading-4-weight);
+    letter-spacing: var(--type-heading-4-tracking);
+    line-height: var(--type-heading-4-line-height);
+    text-decoration: none;
+  }
+
+  .hc-site-header .desktop-nav-list {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .hc-site-header .nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    border: 0;
+    border-block-end: var(--border-width-emphasis) solid transparent;
+    background: transparent;
+    padding: var(--space-sm) var(--space-md);
+    color: var(--foreground);
+    font-family: var(--font-family-interface), sans-serif;
+    font-size: var(--type-body-sm-size);
+    font-weight: var(--type-label-weight);
+    line-height: var(--type-label-line-height);
+    text-decoration: none;
+    transition:
+      border-color var(--duration-fast) var(--ease-standard),
+      color var(--duration-fast) var(--ease-standard);
+  }
+
+  .hc-site-header .nav-link:hover,
+  .hc-site-header .nav-link[data-active],
+  .hc-site-header .nav-link[aria-current="page"] {
+    border-block-end-color: var(--accent);
+    color: var(--primary);
+  }
+
+  .hc-site-header .menu-chevron {
+    transition: transform var(--duration-default) var(--ease-standard);
+  }
+
+  .hc-site-header [data-sw-nav-menu-trigger][data-state="open"] .menu-chevron {
+    transform: rotate(180deg);
+  }
+
+  .hc-site-header .practice-menu {
+    position: absolute;
+    z-index: var(--layer-dropdown);
+    inset-block-start: 100%;
+    inset-inline-start: 0;
+    width: max-content;
+    border: var(--border-width-hairline) solid var(--border);
+    border-radius: var(--radius-card);
+    background: var(--surface);
+    padding: var(--space-sm);
+    box-shadow: var(--shadow-elevated);
+  }
+
+  .hc-site-header .practice-menu-list {
+    display: grid;
+    gap: var(--space-xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .hc-site-header .practice-menu-link {
+    display: block;
+    border-radius: var(--radius-control);
+    padding: var(--space-sm) var(--space-md);
+    color: var(--surface-foreground);
+    font-size: var(--type-body-sm-size);
+    line-height: var(--type-body-line-height);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .hc-site-header .practice-menu-link:hover,
+  .hc-site-header .practice-menu-link:focus-visible,
+  .hc-site-header .practice-menu-link[aria-current="page"] {
+    background: var(--muted);
+    color: var(--primary);
+  }
+
+  .hc-site-header .practice-menu-index {
+    border-block-end: var(--border-width-hairline) solid var(--border);
+    color: var(--primary);
+    font-weight: var(--type-label-weight);
+  }
+
+  .hc-site-header .consultation-link {
+    align-items: center;
+    justify-content: center;
+    border: var(--border-width-hairline) solid var(--primary);
+    border-radius: var(--radius-control);
+    background: var(--primary);
+    padding: var(--space-sm) var(--space-lg);
+    color: var(--primary-foreground);
+    font-size: var(--type-body-sm-size);
+    font-weight: var(--type-label-weight);
+    line-height: var(--type-label-line-height);
+    text-align: center;
+    text-decoration: none;
+    transition:
+      background-color var(--duration-fast) var(--ease-standard),
+      border-color var(--duration-fast) var(--ease-standard);
+  }
+
+  .hc-site-header .consultation-link:hover {
+    border-color: var(--primary-accent);
+    background: var(--primary-accent);
+  }
+
+  .hc-site-header .menu-trigger,
+  .hc-site-header .menu-close {
+    border: var(--border-width-hairline) solid var(--border);
+    border-radius: var(--radius-control);
+    background: var(--surface);
+    padding: var(--space-sm) var(--space-md);
+    color: var(--foreground);
+    font-size: var(--type-label-size);
+    font-weight: var(--type-label-weight);
+    letter-spacing: var(--type-label-tracking);
+    line-height: var(--type-label-line-height);
+    text-transform: uppercase;
+  }
+
+  .mobile-backdrop {
+    position: fixed;
+    z-index: var(--layer-overlay);
+    inset: 0;
+    background: var(--overlay);
+  }
+
+  .mobile-viewport {
+    position: fixed;
+    z-index: var(--layer-modal);
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .mobile-drawer {
+    position: fixed;
+    inset-block: 0;
+    inset-inline: auto 0;
+    width: 100%;
+    max-width: var(--container-narrow);
+    height: 100dvh;
+    margin: 0;
+    border: 0;
+    border-inline-start: var(--border-width-hairline) solid var(--border);
+    background: var(--background);
+    padding: var(--card-padding);
+    color: var(--foreground);
+    box-shadow: var(--shadow-elevated);
+    pointer-events: auto;
+  }
+
+  .mobile-drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-lg);
+    padding-block-end: var(--space-lg);
+    border-block-end: var(--border-width-hairline) solid var(--border);
+  }
+
+  .mobile-drawer-title {
+    margin: 0;
+    font-size: var(--type-heading-4-size);
+  }
+
+  .mobile-nav {
+    display: grid;
+    gap: var(--space-xl);
+    padding-block-start: var(--space-xl);
+  }
+
+  .mobile-nav-group,
+  .mobile-primary-list,
+  .mobile-practice-list {
+    display: grid;
+    gap: var(--space-sm);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .mobile-practice-list {
+    padding-inline-start: var(--space-md);
+    border-inline-start: var(--border-width-emphasis) solid var(--accent);
+  }
+
+  .mobile-nav-heading,
+  .mobile-nav-link {
+    display: block;
+    color: var(--foreground);
+    text-decoration: none;
+  }
+
+  .mobile-nav-heading {
+    font-family: var(--font-family-display), serif;
+    font-size: var(--type-heading-4-size);
+    font-weight: var(--type-heading-4-weight);
+    line-height: var(--type-heading-4-line-height);
+  }
+
+  .mobile-nav-link {
+    padding-block: var(--space-xs);
+    color: var(--muted-foreground);
+    font-size: var(--type-body-size);
+    line-height: var(--type-body-line-height);
+  }
+
+  .mobile-nav-heading[aria-current="page"],
+  .mobile-nav-link[aria-current="page"] {
+    color: var(--primary);
+  }
+
+  .mobile-consultation {
+    display: inline-flex;
+    justify-self: start;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .mobile-drawer {
+      transition: transform var(--duration-default) var(--ease-emphasized);
+    }
+
+    .mobile-drawer[data-state="closed"] {
+      /* A full-width translation is required to place the drawer off canvas. */
+      transform: translateX(100%);
+    }
+
+    .mobile-drawer[data-state="open"] {
+      transform: translateX(0);
+    }
+  }
+</style>

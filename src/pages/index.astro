@@ -1,18 +1,16 @@
 ---
-import '../styles/global.css';
-
+import Container from '@/components/layout/Container.astro';
+import Section from '@/components/layout/Section.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout
+  title="Hawthorne & Cole | Business, Real Estate & Estate Counsel in Fort Worth"
+  description="Hawthorne & Cole is a fictional Fort Worth law firm providing business litigation, contract, commercial real estate, estate planning, and probate counsel."
+>
+  <Section>
+    <Container>
+      <h1 class="font-display text-heading-1">Hawthorne &amp; Cole</h1>
+    </Container>
+  </Section>
+</BaseLayout>

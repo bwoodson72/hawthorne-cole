@@ -1,0 +1,33 @@
+---
+interface Props {
+  variant?: 'compact' | 'full';
+}
+
+const { variant = 'compact' } = Astro.props;
+---
+
+{
+  variant === 'compact' ? (
+    <aside class="border-b border-border bg-surface text-muted-foreground" aria-label="Portfolio disclosure">
+      <p class="mx-auto max-w-site px-gutter py-xs text-center text-caption">
+        Concept website created by Brian Woodson Web Development. Hawthorne &amp; Cole is a fictional firm.
+        {' '}<a class="disclosure-link" href="/privacy/">Portfolio disclosure</a>
+      </p>
+    </aside>
+  ) : (
+    <aside class="border-t border-border pt-lg text-body-sm" aria-label="Portfolio disclosure">
+      <p>
+        Hawthorne &amp; Cole is a fictional law firm created as a portfolio project by Brian Woodson Web Development. No attorney-client relationship is offered or created through this website.
+      </p>
+    </aside>
+  )
+}
+
+<style>
+  .disclosure-link {
+    color: inherit;
+    text-decoration-line: underline;
+    text-decoration-color: var(--accent);
+    text-underline-offset: var(--space-xs);
+  }
+</style>

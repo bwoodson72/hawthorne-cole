@@ -32,6 +32,8 @@
   --outline: var(--hc-oxblood-600);
   --inverse: var(--hc-charcoal-950);
   --inverse-foreground: var(--hc-ivory-50);
+  --inverse-muted-foreground: var(--hc-warm-gray-400);
+  --overlay: color-mix(in oklch, var(--inverse) 72%, transparent);
   --danger: var(--hc-oxblood-600);
   --danger-foreground: var(--hc-ivory-50);
 
@@ -103,6 +105,12 @@
   --container-prose: var(--layout-width-prose);
   --container-narrow: var(--layout-width-narrow);
   --header-height: 5rem;
+
+  /* Interface layering tokens. */
+  --layer-dropdown: 20;
+  --layer-overlay: 40;
+  --layer-modal: 50;
+  --layer-skip-link: 100;
 
   /* Radius and border tokens. */
   --shape-radius-sm: 0.125rem;
