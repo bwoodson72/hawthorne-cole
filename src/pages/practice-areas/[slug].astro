@@ -1,0 +1,163 @@
+---
+import { getCollection, getEntries, render, type CollectionEntry } from 'astro:content';
+import AttorneyCard from '@/components/patterns/AttorneyCard.astro';
+import ConsultationCTA from '@/components/patterns/ConsultationCTA.astro';
+import FaqAccordion from '@/components/patterns/FaqAccordion.astro';
+import PageHero from '@/components/patterns/PageHero.astro';
+import RelatedContent from '@/components/patterns/RelatedContent.astro';
+import SectionHeading from '@/components/patterns/SectionHeading.astro';
+import Breadcrumb from '@/components/ui/Breadcrumb.astro';
+import Container from '@/components/layout/Container.astro';
+import Prose from '@/components/layout/Prose.astro';
+import Section from '@/components/layout/Section.astro';
+import Stack from '@/components/layout/Stack.astro';
+import LinkButton from '@/components/ui/LinkButton.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getPracticeAreaRelationships } from '@/lib/content/relationships';
+
+interface Props {
+  practiceArea: CollectionEntry<'practiceAreas'>;
+}
+
+export async function getStaticPaths() {
+  const practiceAreas = await getCollection('practiceAreas');
+  return practiceAreas.map((practiceArea) => ({
+    params: { slug: practiceArea.id },
+    props: { practiceArea },
+  }));
+}
+
+const { practiceArea } = Astro.props;
+const { Content } = await render(practiceArea);
+const { attorneys, insights } = await getPracticeAreaRelationships(practiceArea);
+const attorneyCards = await Promise.all(
+  attorneys.map(async (attorney) => ({
+    attorney,
+    practiceAreas: await getEntries(attorney.data.practiceAreas),
+  })),
+);
+const introParagraphs = practiceArea.data.heroCopy.split(/\n\s*\n/);
+
+const sectionLabels = {
+  'business-litigation': { services: 'Matters We Handle', approach: 'Our Approach' },
+  contracts: { services: 'Matters We Handle', approach: 'Approach' },
+  'commercial-real-estate': { services: 'Services', approach: 'Approach' },
+  'estate-planning': { services: 'Estate Planning Services', approach: 'For Business Owners' },
+  probate: { services: 'Probate Services', approach: 'Probate Disputes' },
+} as const;
+
+const labels = sectionLabels[practiceArea.id as keyof typeof sectionLabels] ?? { services: 'Services', approach: 'Our Approach' };
+const businessLitigationCta = practiceArea.id === 'business-litigation';
+---
+
+<BaseLayout
+  title={practiceArea.data.seo?.title ?? `${practiceArea.data.title} | Hawthorne & Cole`}
+  description={practiceArea.data.seo?.description ?? practiceArea.data.summary}
+>
+  <PageHero
+    eyebrow={practiceArea.data.eyebrow}
+    title={practiceArea.data.headline}
+    intro={introParagraphs}
+    variant="compact"
+  >
+    <Breadcrumb
+      slot="breadcrumb"
+      items={[
+        { label: 'Home', href: '/' },
+        { label: 'Practice Areas', href: '/practice-areas/' },
+        { label: practiceArea.data.title },
+      ]}
+    />
+  </PageHero>
+
+  <Section>
+    <Container>
+      <div class="services-layout">
+        <SectionHeading eyebrow="Scope of Counsel" heading={labels.services} />
+        <ul class="services-list">
+          {practiceArea.data.services.map((service) => <li>{service}</li>)}
+        </ul>
+      </div>
+    </Container>
+  </Section>
+
+  <Section tone="muted" border="both">
+    <Container>
+      <div class="approach-layout">
+        <p class="section-label">{labels.approach}</p>
+        <Prose><Content /></Prose>
+      </div>
+    </Container>
+  </Section>
+
+  <Section>
+    <Container>
+      <Stack space="xl">
+        <SectionHeading eyebrow="Counsel" heading={attorneys.length === 1 ? 'Related Attorney' : 'Related Attorneys'} />
+        <div class="attorney-grid">
+          {attorneyCards.map(({ attorney, practiceAreas }) => (
+            <AttorneyCard
+              name={attorney.data.name}
+              title={attorney.data.title}
+              focusAreas={practiceAreas.map(({ data }) => data.title)}
+              bio={attorney.data.shortBio}
+              href={`/attorneys/${attorney.id}/`}
+              linkLabel={`Meet ${attorney.data.name}`}
+              expectedPortraitFilename={`${attorney.id}-portrait.webp`}
+              variant="featured"
+            />
+          ))}
+        </div>
+      </Stack>
+    </Container>
+  </Section>
+
+  <Section tone="inverse">
+    <Container width="content">
+      <Stack space="xl">
+        <SectionHeading eyebrow={practiceArea.data.title} heading={`${practiceArea.data.title} FAQs`} tone="inverse" />
+        <FaqAccordion items={practiceArea.data.faqs} tone="inverse" />
+      </Stack>
+    </Container>
+  </Section>
+
+  <Section>
+    <Container>
+      {insights.length > 0 ? (
+        <RelatedContent
+          heading="Related Insights"
+          items={insights.map((insight) => ({
+            eyebrow: insight.data.category,
+            title: insight.data.title,
+            description: insight.data.summary,
+            href: `/insights/${insight.id}/`,
+          }))}
+        />
+      ) : (
+        <Stack space="lg">
+          <SectionHeading eyebrow="Insights" heading="Related Insights" />
+          <LinkButton href="/insights/" variant="text">View All Insights <span aria-hidden="true">→</span></LinkButton>
+        </Stack>
+      )}
+    </Container>
+  </Section>
+
+  <ConsultationCTA
+    variant="closing"
+    heading={businessLitigationCta ? 'A business dispute becomes more expensive when the strategy comes too late.' : undefined}
+    body={businessLitigationCta ? 'If a conflict is beginning to affect ownership, operations, money, or important business relationships, early legal analysis can clarify the available options.' : undefined}
+  />
+</BaseLayout>
+
+<style>
+  .services-layout, .approach-layout { display: grid; gap: var(--content-gap); }
+  .services-list { display: grid; gap: 0; margin: 0; padding: 0; border-block-end: var(--border-width-hairline) solid var(--border); list-style: none; }
+  .services-list li { border-block-start: var(--border-width-hairline) solid var(--border); padding-block: var(--space-md); text-transform: capitalize; }
+  .section-label { margin: 0; color: var(--primary); font-size: var(--type-label-size); font-weight: var(--type-label-weight); letter-spacing: var(--type-label-tracking); line-height: var(--type-label-line-height); text-transform: uppercase; }
+  .attorney-grid { display: grid; gap: var(--content-gap); }
+  @media (min-width: 48rem) {
+    .services-layout, .approach-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); align-items: start; }
+    .services-list { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--content-gap); }
+    .attorney-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+</style>

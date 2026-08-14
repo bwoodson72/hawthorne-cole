@@ -1,0 +1,71 @@
+---
+import { getCollection } from 'astro:content';
+import PageHero from '@/components/patterns/PageHero.astro';
+import PracticeAreaCard from '@/components/patterns/PracticeAreaCard.astro';
+import Container from '@/components/layout/Container.astro';
+import Section from '@/components/layout/Section.astro';
+import Stack from '@/components/layout/Stack.astro';
+import LinkButton from '@/components/ui/LinkButton.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getPracticeAreaRelationships } from '@/lib/content/relationships';
+
+const practiceOrder = ['business-litigation', 'contracts', 'commercial-real-estate', 'estate-planning', 'probate'];
+const allPracticeAreas = await getCollection('practiceAreas');
+const practiceAreas = practiceOrder
+  .map((id) => allPracticeAreas.find((entry) => entry.id === id))
+  .filter((entry): entry is (typeof allPracticeAreas)[number] => Boolean(entry));
+const practicesWithAttorneys = await Promise.all(
+  practiceAreas.map(async (practiceArea) => ({
+    practiceArea,
+    attorneys: (await getPracticeAreaRelationships(practiceArea)).attorneys,
+  })),
+);
+---
+
+<BaseLayout
+  title="Practice Areas | Hawthorne & Cole"
+  description="Hawthorne & Cole advises Fort Worth businesses, property owners, and families on litigation, contracts, commercial real estate, estate planning, and probate."
+>
+  <PageHero
+    eyebrow="Practice Areas"
+    title="Counsel for the decisions businesses and families cannot afford to treat casually."
+    intro={[
+      'Hawthorne & Cole focuses on a defined group of matters where legal decisions frequently intersect with ownership, property, money, and long-term relationships.',
+      'Each practice area is connected to the others by the same objective: helping the client understand risk before choosing what happens next.',
+    ]}
+    variant="compact"
+  />
+
+  <Section>
+    <Container>
+      <div class="practice-index">
+        {practicesWithAttorneys.map(({ practiceArea, attorneys }, index) => (
+          <PracticeAreaCard
+            title={practiceArea.data.title}
+            summary={practiceArea.data.summary}
+            href={`/practice-areas/${practiceArea.id}/`}
+            linkLabel={`Explore ${practiceArea.data.title}`}
+            index={index + 1}
+            attorney={attorneys.map(({ data }) => data.name).join(' and ')}
+            variant={index === 0 ? 'featured' : 'editorial'}
+          />
+        ))}
+      </div>
+    </Container>
+  </Section>
+
+  <Section tone="muted" spacing="compact" border="both">
+    <Container width="content">
+      <Stack space="lg" class="closing-note">
+        <p>Not every legal problem fits neatly into a category. If you are unsure which practice area applies, describe the situation during the consultation request and the firm can determine whether the matter falls within its scope.</p>
+        <LinkButton href="/consultation/">Schedule a Consultation</LinkButton>
+      </Stack>
+    </Container>
+  </Section>
+</BaseLayout>
+
+<style>
+  .practice-index { display: grid; }
+  .closing-note { align-items: start; }
+  .closing-note p { max-width: var(--container-prose); margin: 0; font-size: var(--type-body-lg-size); line-height: var(--type-body-lg-line-height); }
+</style>

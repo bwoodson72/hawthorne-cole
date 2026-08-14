@@ -1,0 +1,52 @@
+---
+import {
+  AccordionHeader,
+  AccordionItem,
+  AccordionPanel,
+  AccordionRoot,
+  AccordionTrigger,
+} from '@starwind-ui/astro/accordion';
+
+interface Faq {
+  question: string;
+  answer: string;
+}
+
+interface Props {
+  items: Faq[];
+  tone?: 'default' | 'inverse';
+}
+
+const { items, tone = 'default' } = Astro.props;
+---
+
+<AccordionRoot type="single" collapsible={true} class:list={['hc-faq', `hc-faq--${tone}`]}>
+  {items.map((item, index) => (
+    <AccordionItem value={`faq-${index + 1}`} class="hc-faq__item">
+      <AccordionHeader class="hc-faq__heading">
+        <AccordionTrigger class="hc-faq__trigger">
+          <span>{item.question}</span>
+          <span class="hc-faq__icon" aria-hidden="true">+</span>
+        </AccordionTrigger>
+      </AccordionHeader>
+      <AccordionPanel class="hc-faq__panel">
+        <p>{item.answer}</p>
+      </AccordionPanel>
+    </AccordionItem>
+  ))}
+</AccordionRoot>
+
+<style>
+  :global(.hc-faq) { border-block-end: var(--border-width-hairline) solid var(--border); }
+  :global(.hc-faq__item) { border-block-start: var(--border-width-hairline) solid var(--border); }
+  :global(.hc-faq__heading) { margin: 0; }
+  :global(.hc-faq__trigger) { display: flex; width: 100%; min-height: var(--control-height); align-items: center; justify-content: space-between; gap: var(--space-lg); border: 0; background: transparent; padding-block: var(--space-lg); color: var(--foreground); font-family: var(--font-family-display), serif; font-size: var(--type-heading-4-size); font-weight: var(--type-heading-4-weight); line-height: var(--type-heading-4-line-height); text-align: start; }
+  :global(.hc-faq__icon) { flex: none; color: var(--primary); font-family: var(--font-family-interface), sans-serif; transition: transform var(--duration-default) var(--ease-standard); }
+  :global(.hc-faq__trigger[data-state='open'] .hc-faq__icon) { transform: rotate(45deg); }
+  :global(.hc-faq__panel) { overflow: hidden; color: var(--muted-foreground); }
+  :global(.hc-faq__panel p) { max-width: var(--container-prose); margin: 0; padding-block: 0 var(--space-lg); line-height: var(--type-body-lg-line-height); }
+  :global(.hc-faq--inverse), :global(.hc-faq--inverse .hc-faq__item) { border-color: var(--secondary-accent); }
+  :global(.hc-faq--inverse .hc-faq__trigger) { color: var(--inverse-foreground); }
+  :global(.hc-faq--inverse .hc-faq__icon) { color: var(--accent); }
+  :global(.hc-faq--inverse .hc-faq__panel) { color: var(--inverse-muted-foreground); }
+</style>
