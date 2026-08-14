@@ -1,0 +1,23 @@
+---
+interface Stat { value: string; label: string; }
+interface Props { items: [Stat, Stat, Stat]; tone?: 'default' | 'inverse'; label?: string; }
+const { items, tone = 'default', label = 'Firm overview' } = Astro.props;
+---
+<aside class:list={['stat-strip', `stat-strip--${tone}`]} aria-label={label}>
+  <dl>
+    {items.map((item) => <div><dt>{item.value}</dt><dd>{item.label}</dd></div>)}
+  </dl>
+</aside>
+<style>
+  .stat-strip { --stat-count: 3; border-block: var(--border-width-hairline) solid var(--border); background: var(--surface); color: var(--foreground); }
+  .stat-strip--inverse { border-color: var(--secondary-accent); background: var(--inverse); color: var(--inverse-foreground); }
+  .stat-strip dl { display: grid; max-width: var(--container-site); margin: 0 auto; padding-inline: var(--gutter); }
+  .stat-strip dl > div { display: grid; gap: var(--space-xs); padding-block: var(--space-lg); }
+  .stat-strip dl > div + div { border-block-start: var(--border-width-hairline) solid var(--border); }
+  .stat-strip--inverse dl > div + div { border-color: var(--secondary-accent); }
+  .stat-strip dt { color: var(--primary); font-family: var(--font-family-display), serif; font-size: var(--type-heading-4-size); font-weight: var(--type-heading-4-weight); line-height: var(--type-heading-4-line-height); }
+  .stat-strip--inverse dt { color: var(--accent); }
+  .stat-strip dd { margin: 0; color: var(--muted-foreground); font-size: var(--type-body-sm-size); }
+  .stat-strip--inverse dd { color: var(--inverse-muted-foreground); }
+  @media (min-width: 40rem) { .stat-strip dl { grid-template-columns: repeat(var(--stat-count, 3), minmax(0, 1fr)); } .stat-strip dl > div { padding-inline: var(--space-xl); } .stat-strip dl > div:first-child { padding-inline-start: 0; } .stat-strip dl > div + div { border-block-start: 0; border-inline-start: var(--border-width-hairline) solid var(--border); } }
+</style>

@@ -1,0 +1,25 @@
+---
+interface Item { href: string; title: string; eyebrow?: string; description?: string; }
+interface Props { heading?: string; items: Item[]; variant?: 'grid' | 'list'; headingId?: string; }
+const { heading = 'Related Content', items, variant = 'grid', headingId = 'related-content-heading' } = Astro.props;
+---
+<section class:list={['related', `related--${variant}`]} aria-labelledby={headingId}>
+  <h2 id={headingId}>{heading}</h2>
+  <ul>
+    {items.map((item) => <li><article>{item.eyebrow && <p>{item.eyebrow}</p>}<h3><a href={item.href}>{item.title}</a></h3>{item.description && <div>{item.description}</div>}</article></li>)}
+  </ul>
+</section>
+<style>
+  .related { display: grid; gap: var(--content-gap); }
+  .related > h2 { margin: 0; font-size: var(--type-heading-3-size); font-weight: var(--type-heading-3-weight); line-height: var(--type-heading-3-line-height); }
+  .related ul { display: grid; gap: var(--space-xl); margin: 0; padding: 0; list-style: none; }
+  .related li { border-block-start: var(--border-width-hairline) solid var(--border); padding-block-start: var(--space-lg); }
+  .related article { display: grid; gap: var(--space-sm); }
+  .related article p, .related h3, .related article div { margin: 0; }
+  .related article p { color: var(--primary); font-size: var(--type-caption-size); font-weight: var(--type-caption-weight); letter-spacing: var(--type-caption-tracking); text-transform: uppercase; }
+  .related h3 { font-size: var(--type-heading-4-size); line-height: var(--type-heading-4-line-height); }
+  .related h3 a { color: inherit; text-decoration: none; }
+  .related h3 a:hover { color: var(--primary); }
+  .related article div { color: var(--muted-foreground); }
+  @media (min-width: 48rem) { .related--grid ul { grid-template-columns: repeat(3, minmax(0, 1fr)); } .related--list li article { grid-template-columns: minmax(10rem, 1fr) minmax(0, 2fr); align-items: baseline; } }
+</style>

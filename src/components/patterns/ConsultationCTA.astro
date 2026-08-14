@@ -10,6 +10,8 @@ interface Props {
   body?: string;
   href?: string;
   label?: string;
+  variant?: 'banner' | 'closing';
+  secondaryText?: string;
 }
 
 const {
@@ -18,10 +20,12 @@ const {
   body = 'Tell us what you are facing and what you are trying to accomplish.',
   href = '/consultation/',
   label = 'Schedule a Consultation',
+  variant = 'banner',
+  secondaryText,
 } = Astro.props;
 ---
 
-<Section tone="inverse" spacing="compact" border="both">
+<Section tone="inverse" spacing={variant === 'closing' ? 'default' : 'compact'} border="both">
   <Container width="content">
     <div class="consultation-layout">
       <Stack space="md">
@@ -31,6 +35,7 @@ const {
       </Stack>
       <Cluster>
         <a class="consultation-button" href={href}>{label}</a>
+        {secondaryText && <p class="consultation-secondary">{secondaryText}</p>}
       </Cluster>
     </div>
   </Container>
@@ -49,6 +54,12 @@ const {
   .consultation-heading,
   .consultation-body {
     margin: 0;
+  }
+
+  .consultation-secondary {
+    margin: 0;
+    color: var(--inverse-muted-foreground);
+    font-size: var(--type-body-sm-size);
   }
 
   .consultation-eyebrow {

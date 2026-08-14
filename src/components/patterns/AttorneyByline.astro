@@ -1,0 +1,21 @@
+---
+interface Portrait { src: string; alt: string; width: number; height: number; }
+interface Props { name: string; title?: string; href: string; publishedDate?: Date; readingTime?: string; portrait?: Portrait; variant?: 'inline' | 'box'; }
+const { name, title, href, publishedDate, readingTime, portrait, variant = 'inline' } = Astro.props;
+const formattedDate = publishedDate?.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+---
+<div class:list={['byline', `byline--${variant}`]}>
+  {portrait && <img src={portrait.src} alt="" width={portrait.width} height={portrait.height} loading="lazy" decoding="async" />}
+  <div>
+    <p>By <a rel="author" href={href}>{name}</a>{title && <span>, {title}</span>}</p>
+    {(formattedDate || readingTime) && <p class="byline__meta">{formattedDate && <time datetime={publishedDate?.toISOString()}>{formattedDate}</time>}{formattedDate && readingTime && <span aria-hidden="true"> · </span>}{readingTime}</p>}
+  </div>
+</div>
+<style>
+  .byline { display: flex; gap: var(--space-md); align-items: center; }
+  .byline--box { border-block: var(--border-width-hairline) solid var(--border); padding-block: var(--space-lg); }
+  .byline img { width: var(--space-xl); height: var(--space-xl); border-radius: var(--radius-pill); object-fit: cover; }
+  .byline p { margin: 0; font-size: var(--type-body-sm-size); }
+  .byline a { color: var(--foreground); font-weight: var(--type-label-weight); text-underline-offset: var(--space-xs); }
+  .byline__meta { color: var(--muted-foreground); }
+</style>

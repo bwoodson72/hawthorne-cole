@@ -1,0 +1,49 @@
+---
+import Container from '@/components/layout/Container.astro';
+import Stack from '@/components/layout/Stack.astro';
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  intro?: string;
+  variant?: 'default' | 'compact' | 'inverse';
+  align?: 'start' | 'center';
+}
+
+const {
+  eyebrow,
+  title,
+  intro,
+  variant = 'default',
+  align = 'start',
+} = Astro.props;
+---
+
+<header class:list={['page-hero', `page-hero--${variant}`, `page-hero--${align}`]}>
+  <Container width={align === 'center' ? 'content' : 'site'}>
+    {Astro.slots.has('breadcrumb') && <div class="page-hero__breadcrumb"><slot name="breadcrumb" /></div>}
+    <Stack space="lg" class="page-hero__content">
+      {eyebrow && <p class="page-hero__eyebrow">{eyebrow}</p>}
+      <h1>{title}</h1>
+      {intro && <p class="page-hero__intro">{intro}</p>}
+      {Astro.slots.has('actions') && <div class="page-hero__actions"><slot name="actions" /></div>}
+      <slot />
+    </Stack>
+  </Container>
+</header>
+
+<style>
+  .page-hero { padding-block: var(--hero-spacing); background: var(--background); color: var(--foreground); }
+  .page-hero--compact { padding-block: var(--section-compact); }
+  .page-hero--inverse { background: var(--inverse); color: var(--inverse-foreground); }
+  .page-hero__breadcrumb { margin-block-end: var(--space-xl); }
+  .page-hero__content { max-width: var(--hero-max-width); }
+  .page-hero--center .page-hero__content { margin-inline: auto; text-align: center; align-items: center; }
+  .page-hero__eyebrow, .page-hero h1, .page-hero__intro { margin: 0; }
+  .page-hero__eyebrow { color: var(--primary); font-size: var(--type-label-size); font-weight: var(--type-label-weight); letter-spacing: var(--type-label-tracking); line-height: var(--type-label-line-height); text-transform: uppercase; }
+  .page-hero--inverse .page-hero__eyebrow { color: var(--accent); }
+  .page-hero h1 { max-width: var(--container-content); font-size: var(--type-heading-1-size); font-weight: var(--type-heading-1-weight); letter-spacing: var(--type-heading-1-tracking); line-height: var(--type-heading-1-line-height); }
+  .page-hero__intro { max-width: var(--container-prose); color: var(--muted-foreground); font-size: var(--type-body-lg-size); line-height: var(--type-body-lg-line-height); }
+  .page-hero--inverse .page-hero__intro { color: var(--inverse-muted-foreground); }
+  .page-hero__actions { padding-block-start: var(--space-sm); }
+</style>
