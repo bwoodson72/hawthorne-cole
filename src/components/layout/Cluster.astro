@@ -1,0 +1,60 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type Element = 'div' | 'nav' | 'section' | 'header' | 'footer' | 'ul';
+type Space = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+type Align = 'start' | 'center' | 'end' | 'baseline';
+type Justify = 'start' | 'center' | 'end' | 'between';
+
+type Props = Omit<HTMLAttributes<'div'>, 'class'> & {
+  as?: Element;
+  space?: Space;
+  align?: Align;
+  justify?: Justify;
+  class?: string;
+};
+
+const {
+  as: Tag = 'div',
+  space = 'md',
+  align = 'center',
+  justify = 'start',
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const spaces: Record<Space, string> = {
+  xs: 'gap-xs',
+  sm: 'gap-sm',
+  md: 'gap-md',
+  lg: 'gap-lg',
+  xl: 'gap-xl',
+};
+
+const alignments: Record<Align, string> = {
+  start: 'items-start',
+  center: 'items-center',
+  end: 'items-end',
+  baseline: 'items-baseline',
+};
+
+const justifications: Record<Justify, string> = {
+  start: 'justify-start',
+  center: 'justify-center',
+  end: 'justify-end',
+  between: 'justify-between',
+};
+---
+
+<Tag
+  {...attributes}
+  class:list={[
+    'flex flex-wrap',
+    spaces[space],
+    alignments[align],
+    justifications[justify],
+    className,
+  ]}
+>
+  <slot />
+</Tag>

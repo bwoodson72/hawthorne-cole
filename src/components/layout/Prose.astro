@@ -1,0 +1,192 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type Element = 'div' | 'article' | 'section';
+type Measure = 'prose' | 'narrow' | 'none';
+
+type Props = Omit<HTMLAttributes<'div'>, 'class'> & {
+  as?: Element;
+  measure?: Measure;
+  class?: string;
+};
+
+const {
+  as: Tag = 'div',
+  measure = 'prose',
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const measures: Record<Measure, string> = {
+  prose: 'max-w-prose',
+  narrow: 'max-w-narrow',
+  none: 'max-w-none',
+};
+---
+
+<Tag {...attributes} class:list={['hc-prose w-full', measures[measure], className]}>
+  <slot />
+</Tag>
+
+<style>
+  .hc-prose {
+    color: var(--foreground);
+    font-family: var(--font-family-interface), sans-serif;
+    font-size: var(--type-body-lg-size);
+    line-height: var(--type-body-lg-line-height);
+  }
+
+  .hc-prose > :global(:first-child) {
+    margin-block-start: 0;
+  }
+
+  .hc-prose > :global(:last-child) {
+    margin-block-end: 0;
+  }
+
+  .hc-prose :global(h1),
+  .hc-prose :global(h2),
+  .hc-prose :global(h3),
+  .hc-prose :global(h4) {
+    color: var(--foreground);
+    font-family: var(--font-family-display), serif;
+    text-wrap: balance;
+  }
+
+  .hc-prose :global(h1) {
+    margin-block: var(--space-xl) var(--space-lg);
+    font-size: var(--type-heading-2-size);
+    font-weight: var(--type-heading-2-weight);
+    letter-spacing: var(--type-heading-2-tracking);
+    line-height: var(--type-heading-2-line-height);
+  }
+
+  .hc-prose :global(h2) {
+    margin-block: var(--section-compact) var(--space-lg);
+    font-size: var(--type-heading-3-size);
+    font-weight: var(--type-heading-3-weight);
+    letter-spacing: var(--type-heading-3-tracking);
+    line-height: var(--type-heading-3-line-height);
+  }
+
+  .hc-prose :global(h3) {
+    margin-block: var(--space-xl) var(--space-md);
+    font-size: var(--type-heading-4-size);
+    font-weight: var(--type-heading-4-weight);
+    letter-spacing: var(--type-heading-4-tracking);
+    line-height: var(--type-heading-4-line-height);
+  }
+
+  .hc-prose :global(h4) {
+    margin-block: var(--space-xl) var(--space-sm);
+    font-size: var(--type-body-lg-size);
+    font-weight: var(--type-heading-4-weight);
+    line-height: var(--type-heading-4-line-height);
+  }
+
+  .hc-prose :global(p),
+  .hc-prose :global(ul),
+  .hc-prose :global(ol),
+  .hc-prose :global(blockquote),
+  .hc-prose :global(figure),
+  .hc-prose :global(pre),
+  .hc-prose :global(table) {
+    margin-block: 0 var(--space-lg);
+  }
+
+  .hc-prose :global(ul),
+  .hc-prose :global(ol) {
+    padding-inline-start: var(--space-xl);
+  }
+
+  .hc-prose :global(li + li) {
+    margin-block-start: var(--space-xs);
+  }
+
+  .hc-prose :global(a) {
+    color: var(--primary);
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: var(--border-width-hairline);
+    text-underline-offset: var(--space-xs);
+    transition: color var(--duration-fast) var(--ease-standard);
+  }
+
+  .hc-prose :global(a:hover) {
+    color: var(--primary-accent);
+  }
+
+  .hc-prose :global(strong) {
+    color: var(--foreground);
+    font-weight: var(--type-label-weight);
+  }
+
+  .hc-prose :global(blockquote) {
+    border-inline-start: var(--border-width-emphasis) solid var(--accent);
+    padding-inline-start: var(--space-lg);
+    color: var(--muted-foreground);
+    font-family: var(--font-family-display), serif;
+    font-size: var(--type-heading-4-size);
+    font-style: italic;
+    line-height: var(--type-body-lg-line-height);
+  }
+
+  .hc-prose :global(hr) {
+    margin-block: var(--section-compact);
+    border: 0;
+    border-block-start: var(--border-width-hairline) solid var(--border);
+  }
+
+  .hc-prose :global(img) {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .hc-prose :global(figcaption) {
+    margin-block-start: var(--space-sm);
+    color: var(--muted-foreground);
+    font-size: var(--type-caption-size);
+    line-height: var(--type-caption-line-height);
+  }
+
+  .hc-prose :global(code) {
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    padding-inline: var(--space-xs);
+    font-size: var(--type-body-sm-size);
+  }
+
+  .hc-prose :global(pre) {
+    overflow-x: auto;
+    border: var(--border-width-hairline) solid var(--border);
+    border-radius: var(--radius-card);
+    background: var(--inverse);
+    padding: var(--card-padding);
+    color: var(--inverse-foreground);
+    font-size: var(--type-body-sm-size);
+    line-height: var(--type-body-line-height);
+  }
+
+  .hc-prose :global(pre code) {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+  }
+
+  .hc-prose :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--type-body-sm-size);
+  }
+
+  .hc-prose :global(th),
+  .hc-prose :global(td) {
+    border-block-end: var(--border-width-hairline) solid var(--border);
+    padding: var(--space-sm);
+    text-align: start;
+    vertical-align: top;
+  }
+
+  .hc-prose :global(th) {
+    font-weight: var(--type-label-weight);
+  }
+</style>

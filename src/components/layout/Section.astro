@@ -1,0 +1,51 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type Element = 'section' | 'div' | 'main' | 'article' | 'aside';
+type Spacing = 'default' | 'compact' | 'generous';
+type Tone = 'default' | 'muted' | 'inverse';
+type Border = 'none' | 'top' | 'bottom' | 'both';
+
+type Props = Omit<HTMLAttributes<'section'>, 'class'> & {
+  as?: Element;
+  spacing?: Spacing;
+  tone?: Tone;
+  border?: Border;
+  class?: string;
+};
+
+const {
+  as: Tag = 'section',
+  spacing = 'default',
+  tone = 'default',
+  border = 'none',
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const spacings: Record<Spacing, string> = {
+  default: 'py-section',
+  compact: 'py-section-compact',
+  generous: 'py-section-generous',
+};
+
+const tones: Record<Tone, string> = {
+  default: 'bg-background text-foreground',
+  muted: 'bg-muted text-foreground',
+  inverse: 'bg-inverse text-inverse-foreground',
+};
+
+const borders: Record<Border, string> = {
+  none: '',
+  top: 'border-t border-border',
+  bottom: 'border-b border-border',
+  both: 'border-y border-border',
+};
+---
+
+<Tag
+  {...attributes}
+  class:list={[spacings[spacing], tones[tone], borders[border], className]}
+>
+  <slot />
+</Tag>

@@ -1,0 +1,30 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type Element = 'div' | 'main' | 'section' | 'article' | 'header' | 'footer' | 'nav';
+type Width = 'site' | 'content' | 'prose' | 'narrow';
+
+type Props = Omit<HTMLAttributes<'div'>, 'class'> & {
+  as?: Element;
+  width?: Width;
+  class?: string;
+};
+
+const {
+  as: Tag = 'div',
+  width = 'site',
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const widths: Record<Width, string> = {
+  site: 'max-w-site',
+  content: 'max-w-content',
+  prose: 'max-w-prose',
+  narrow: 'max-w-narrow',
+};
+---
+
+<Tag {...attributes} class:list={['mx-auto w-full px-gutter', widths[width], className]}>
+  <slot />
+</Tag>

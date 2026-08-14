@@ -1,0 +1,31 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type Element = 'div' | 'section' | 'article' | 'header' | 'footer' | 'ul' | 'ol';
+type Space = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+
+type Props = Omit<HTMLAttributes<'div'>, 'class'> & {
+  as?: Element;
+  space?: Space;
+  class?: string;
+};
+
+const {
+  as: Tag = 'div',
+  space = 'md',
+  class: className,
+  ...attributes
+} = Astro.props;
+
+const spaces: Record<Space, string> = {
+  xs: 'gap-xs',
+  sm: 'gap-sm',
+  md: 'gap-md',
+  lg: 'gap-lg',
+  xl: 'gap-xl',
+};
+---
+
+<Tag {...attributes} class:list={['flex flex-col', spaces[space], className]}>
+  <slot />
+</Tag>
