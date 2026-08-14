@@ -1,0 +1,99 @@
+---
+import { getCollection } from 'astro:content';
+import ConsultationCTA from '@/components/patterns/ConsultationCTA.astro';
+import PageHero from '@/components/patterns/PageHero.astro';
+import SectionHeading from '@/components/patterns/SectionHeading.astro';
+import Container from '@/components/layout/Container.astro';
+import Section from '@/components/layout/Section.astro';
+import Stack from '@/components/layout/Stack.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+const practiceOrder = ['business-litigation', 'contracts', 'commercial-real-estate', 'estate-planning', 'probate'];
+const allPracticeAreas = await getCollection('practiceAreas');
+const practiceAreas = practiceOrder
+  .map((id) => allPracticeAreas.find((entry) => entry.id === id))
+  .filter((entry): entry is (typeof allPracticeAreas)[number] => Boolean(entry));
+---
+
+<BaseLayout
+  title="Fort Worth Business & Estate Attorneys | Hawthorne & Cole"
+  description="Fictional Fort Worth counsel for business disputes, contracts, commercial real estate, estate planning, and probate matters throughout North Texas."
+>
+  <PageHero
+    eyebrow="Fort Worth, Texas"
+    title="Legal counsel for Fort Worth businesses, property owners, and families."
+    intro="Hawthorne & Cole is based in downtown Fort Worth and serves clients dealing with business disputes, contracts, commercial property, estate planning, and probate matters throughout North Texas."
+    variant="compact"
+  />
+
+  <Section>
+    <Container>
+      <div class="location-context">
+        <SectionHeading eyebrow="Local Business Context" heading="Counsel built around the way closely held businesses actually operate." />
+        <Stack space="lg" class="context-copy">
+          <p>Fort Worth's economy includes family-owned companies, professional firms, contractors, property investors, manufacturers, service businesses, and companies whose ownership and management relationships may span generations.</p>
+          <p>For those businesses, legal matters frequently overlap.</p>
+          <p>A disagreement between owners can become a contract dispute. A real estate acquisition can affect operating cash flow. Estate planning can determine who controls a company after the death of its founder.</p>
+          <p>Hawthorne & Cole's practice is structured around those intersections.</p>
+        </Stack>
+      </div>
+    </Container>
+  </Section>
+
+  <Section tone="muted" border="both">
+    <Container>
+      <Stack space="xl">
+        <SectionHeading eyebrow="Fort Worth" heading="Practice Areas" />
+        <nav aria-label="Fort Worth practice areas">
+          <ul class="practice-links">
+            {practiceAreas.map((practiceArea, index) => (
+              <li>
+                <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+                <a href={`/practice-areas/${practiceArea.id}/`}>{practiceArea.data.title}<span aria-hidden="true">→</span></a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </Stack>
+    </Container>
+  </Section>
+
+  <Section>
+    <Container width="content">
+      <div class="office-layout">
+        <SectionHeading eyebrow="Downtown Fort Worth" heading="Office Information" />
+        <address>
+          <strong>Hawthorne & Cole Attorneys at Law</strong>
+          <span>500 West 7th Street</span>
+          <span>Suite 1800</span>
+          <span>Fort Worth, Texas 76102</span>
+          <a href="tel:+18175550148"><span>Phone:</span> (817) 555-0148</a>
+        </address>
+      </div>
+    </Container>
+  </Section>
+
+  <ConsultationCTA
+    variant="closing"
+    heading="Start with the decision you are facing."
+    body="Describe the matter and what you are trying to accomplish. The consultation process is designed to identify the relevant practice area and determine the appropriate next step."
+  />
+</BaseLayout>
+
+<style>
+  .location-context, .office-layout { display: grid; gap: var(--content-gap); }
+  .context-copy { max-width: var(--container-prose); color: var(--muted-foreground); font-size: var(--type-body-lg-size); line-height: var(--type-body-lg-line-height); }
+  .context-copy p { margin: 0; }
+  .practice-links { display: grid; margin: 0; padding: 0; border-block-end: var(--border-width-hairline) solid var(--border); list-style: none; }
+  .practice-links li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-lg); align-items: baseline; border-block-start: var(--border-width-hairline) solid var(--border); padding-block: var(--space-lg); }
+  .practice-links li > span { color: var(--accent); font-family: var(--font-family-display), serif; }
+  .practice-links a { display: flex; justify-content: space-between; gap: var(--space-lg); color: var(--foreground); font-family: var(--font-family-display), serif; font-size: var(--type-heading-4-size); font-weight: var(--type-heading-4-weight); line-height: var(--type-heading-4-line-height); text-decoration: none; }
+  .practice-links a:hover { color: var(--primary); }
+  .office-layout address { display: grid; gap: var(--space-xs); border-block-start: var(--border-width-hairline) solid var(--accent); padding-block-start: var(--space-lg); font-style: normal; line-height: var(--type-body-lg-line-height); }
+  .office-layout address strong { font-family: var(--font-family-display), serif; font-size: var(--type-heading-4-size); }
+  .office-layout address a { width: fit-content; margin-block-start: var(--space-md); color: var(--primary); font-weight: var(--type-label-weight); text-underline-offset: var(--space-xs); }
+  @media (min-width: 48rem) {
+    .location-context, .office-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
+    .practice-links { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--content-gap); }
+  }
+</style>
