@@ -1,14 +1,15 @@
 ---
 interface Portrait { src: string; alt: string; width: number; height: number; }
-interface Props { name: string; title?: string; href: string; publishedDate?: Date; readingTime?: string; portrait?: Portrait; variant?: 'inline' | 'box'; }
-const { name, title, href, publishedDate, readingTime, portrait, variant = 'inline' } = Astro.props;
+interface Props { name: string; title?: string; href: string; publishedDate?: Date; dateStatus?: string; readingTime?: string; portrait?: Portrait; bio?: string; variant?: 'inline' | 'box'; }
+const { name, title, href, publishedDate, dateStatus, readingTime, portrait, bio, variant = 'inline' } = Astro.props;
 const formattedDate = publishedDate?.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 ---
 <div class:list={['byline', `byline--${variant}`]}>
   {portrait && <img src={portrait.src} alt="" width={portrait.width} height={portrait.height} loading="lazy" decoding="async" />}
   <div>
     <p>By <a rel="author" href={href}>{name}</a>{title && <span>, {title}</span>}</p>
-    {(formattedDate || readingTime) && <p class="byline__meta">{formattedDate && <time datetime={publishedDate?.toISOString()}>{formattedDate}</time>}{formattedDate && readingTime && <span aria-hidden="true"> · </span>}{readingTime}</p>}
+    {(formattedDate || dateStatus || readingTime) && <p class="byline__meta">{formattedDate ? <time datetime={publishedDate?.toISOString()}>{formattedDate}</time> : dateStatus}{(formattedDate || dateStatus) && readingTime && <span aria-hidden="true"> · </span>}{readingTime}</p>}
+    {bio && <p class="byline__bio">{bio}</p>}
   </div>
 </div>
 <style>
@@ -18,4 +19,5 @@ const formattedDate = publishedDate?.toLocaleDateString('en-US', { month: 'long'
   .byline p { margin: 0; font-size: var(--type-body-sm-size); }
   .byline a { color: var(--foreground); font-weight: var(--type-label-weight); text-underline-offset: var(--space-xs); }
   .byline__meta { color: var(--muted-foreground); }
+  .byline .byline__bio { max-width: var(--container-prose); margin-block-start: var(--space-sm); color: var(--muted-foreground); line-height: var(--type-body-line-height); }
 </style>

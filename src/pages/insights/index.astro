@@ -1,0 +1,73 @@
+---
+import { getCollection } from 'astro:content';
+import ConsultationCTA from '@/components/patterns/ConsultationCTA.astro';
+import InsightCard from '@/components/patterns/InsightCard.astro';
+import PageHero from '@/components/patterns/PageHero.astro';
+import Container from '@/components/layout/Container.astro';
+import Section from '@/components/layout/Section.astro';
+import Stack from '@/components/layout/Stack.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getInsightRelationships } from '@/lib/content/relationships';
+
+const insightOrder = [
+  'what-to-do-when-business-partnership-dispute-begins',
+  'five-issues-before-signing-commercial-lease',
+  'estate-planning-for-business-owners',
+  'when-a-contract-dispute-becomes-a-business-problem',
+  'why-winning-a-lawsuit-is-not-always-the-same-as-getting-a-good-business-result',
+  'what-happens-to-a-business-when-one-owner-dies',
+];
+const allInsights = await getCollection('insights');
+const insights = insightOrder
+  .map((id) => allInsights.find((entry) => entry.id === id))
+  .filter((entry): entry is (typeof allInsights)[number] => Boolean(entry));
+const insightCards = await Promise.all(
+  insights.map(async (insight) => ({
+    insight,
+    author: (await getInsightRelationships(insight)).author,
+  })),
+);
+---
+
+<BaseLayout
+  title="Insights | Hawthorne & Cole"
+  description="Practical fictional legal insights for Texas businesses, property owners, and families from Hawthorne & Cole."
+>
+  <PageHero
+    eyebrow="Insights"
+    title="Practical perspective for decisions that should not be made blindly."
+    intro="Articles from Hawthorne & Cole examine recurring legal issues affecting Texas businesses, property owners, and families."
+    variant="compact"
+  >
+    <p class="insight-topics">Business Disputes · Contracts · Commercial Real Estate · Estate Planning · Probate</p>
+  </PageHero>
+
+  <Section>
+    <Container>
+      <Stack space="xl">
+        <div class="insight-index">
+          {insightCards.map(({ insight, author }, index) => (
+            <InsightCard
+              title={insight.data.title}
+              summary={insight.data.summary}
+              category={insight.data.category}
+              author={author?.data.name ?? 'Hawthorne & Cole'}
+              href={`/insights/${insight.id}/`}
+              publishedDate={insight.data.publishedDate}
+              variant={index < 3 ? 'featured' : 'standard'}
+            />
+          ))}
+        </div>
+      </Stack>
+    </Container>
+  </Section>
+
+  <ConsultationCTA />
+</BaseLayout>
+
+<style>
+  .insight-topics { max-width: var(--container-content); margin: 0; padding-block-start: var(--space-lg); border-block-start: var(--border-width-hairline) solid var(--border); color: var(--muted-foreground); font-size: var(--type-body-sm-size); line-height: var(--type-body-sm-line-height); }
+  .insight-index { display: grid; gap: var(--content-gap); }
+  @media (min-width: 48rem) { .insight-index { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 64rem) { .insight-index { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+</style>

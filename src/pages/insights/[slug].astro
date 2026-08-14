@@ -1,0 +1,123 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import AttorneyByline from '@/components/patterns/AttorneyByline.astro';
+import ConsultationCTA from '@/components/patterns/ConsultationCTA.astro';
+import RelatedContent from '@/components/patterns/RelatedContent.astro';
+import Breadcrumb from '@/components/ui/Breadcrumb.astro';
+import ImageSlot from '@/components/ui/ImageSlot.astro';
+import LinkButton from '@/components/ui/LinkButton.astro';
+import Container from '@/components/layout/Container.astro';
+import Section from '@/components/layout/Section.astro';
+import Stack from '@/components/layout/Stack.astro';
+import ArticleLayout from '@/layouts/ArticleLayout.astro';
+import { getInsightRelationships } from '@/lib/content/relationships';
+
+interface Props {
+  insight: CollectionEntry<'insights'>;
+}
+
+export async function getStaticPaths() {
+  const insights = await getCollection('insights');
+  return insights.map((insight) => ({
+    params: { slug: insight.id },
+    props: { insight },
+  }));
+}
+
+const { insight } = Astro.props;
+const { Content } = await render(insight);
+const { author, practiceArea } = await getInsightRelationships(insight);
+if (!author || !practiceArea) throw new Error(`Missing content relationship for insight: ${insight.id}`);
+
+const allInsights = await getCollection('insights');
+const relatedInsights = allInsights
+  .filter((entry) =>
+    entry.id !== insight.id &&
+    (entry.data.practiceArea.id === insight.data.practiceArea.id || entry.data.author.id === insight.data.author.id),
+  )
+  .slice(0, 3);
+---
+
+<ArticleLayout
+  title={`${insight.data.title} | Hawthorne & Cole`}
+  description={insight.data.seo?.description ?? insight.data.summary}
+  eyebrow={insight.data.category}
+  heading={insight.data.title}
+  summary={insight.data.summary}
+  hasBody={insight.data.complete}
+>
+  <Breadcrumb
+    slot="breadcrumb"
+    items={[
+      { label: 'Home', href: '/' },
+      { label: 'Insights', href: '/insights/' },
+      { label: insight.data.title },
+    ]}
+  />
+
+  <AttorneyByline
+    slot="meta"
+    name={author.data.name}
+    title={author.data.title}
+    href={`/attorneys/${author.id}/`}
+    publishedDate={insight.data.publishedDate}
+    dateStatus={insight.data.publishedDate ? undefined : 'Publication date forthcoming'}
+  />
+
+  {insight.data.complete && (
+    <ImageSlot
+      slot="feature"
+      label={`${insight.data.title} editorial feature image`}
+      expectedFilename={`${insight.id}-feature.webp`}
+      ratio="wide"
+    />
+  )}
+
+  {insight.data.complete && <Content />}
+
+  <Fragment slot="after">
+    <Section tone="muted" border="top">
+      <Container width="prose">
+        <Stack space="xl">
+          <AttorneyByline
+            name={author.data.name}
+            title={author.data.title}
+            href={`/attorneys/${author.id}/`}
+            bio={author.data.shortBio}
+            variant="box"
+          />
+          <div class="practice-link">
+            <p>Related Practice Area</p>
+            <LinkButton href={`/practice-areas/${practiceArea.id}/`} variant="text">
+              {practiceArea.data.title} <span aria-hidden="true">→</span>
+            </LinkButton>
+          </div>
+        </Stack>
+      </Container>
+    </Section>
+
+    <Section>
+      <Container>
+        <RelatedContent
+          heading="Related Articles"
+          items={relatedInsights.map((related) => ({
+            eyebrow: related.data.category,
+            title: related.data.title,
+            description: related.data.summary,
+            href: `/insights/${related.id}/`,
+          }))}
+        />
+      </Container>
+    </Section>
+
+    <ConsultationCTA
+      variant="closing"
+      heading={insight.data.closingCta}
+    />
+  </Fragment>
+</ArticleLayout>
+
+<style>
+  .practice-link { display: grid; gap: var(--space-sm); }
+  .practice-link p { margin: 0; color: var(--primary); font-size: var(--type-label-size); font-weight: var(--type-label-weight); letter-spacing: var(--type-label-tracking); line-height: var(--type-label-line-height); text-transform: uppercase; }
+</style>

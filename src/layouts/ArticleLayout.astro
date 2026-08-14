@@ -11,9 +11,10 @@ interface Props {
   eyebrow: string;
   heading: string;
   summary: string;
+  hasBody?: boolean;
 }
 
-const { title, description, eyebrow, heading, summary } = Astro.props;
+const { title, description, eyebrow, heading, summary, hasBody = true } = Astro.props;
 ---
 
 <BaseLayout title={title} description={description}>
@@ -21,6 +22,7 @@ const { title, description, eyebrow, heading, summary } = Astro.props;
     <Section spacing="compact" border="bottom">
       <Container width="prose">
         <Stack space="lg">
+          <slot name="breadcrumb" />
           <p class="article-eyebrow">{eyebrow}</p>
           <h1 class="article-heading">{heading}</h1>
           <p class="article-summary">{summary}</p>
@@ -29,13 +31,17 @@ const { title, description, eyebrow, heading, summary } = Astro.props;
       </Container>
     </Section>
 
-    <Section>
-      <Container width="prose">
-        <Prose measure="none">
-          <slot />
-        </Prose>
-      </Container>
-    </Section>
+    {Astro.slots.has('feature') && <div class="article-feature"><slot name="feature" /></div>}
+
+    {hasBody && Astro.slots.has('default') && (
+      <Section>
+        <Container width="prose">
+          <Prose measure="none">
+            <slot />
+          </Prose>
+        </Container>
+      </Section>
+    )}
   </article>
 
   <slot name="after" />
@@ -68,5 +74,11 @@ const { title, description, eyebrow, heading, summary } = Astro.props;
     color: var(--muted-foreground);
     font-size: var(--type-body-lg-size);
     line-height: var(--type-body-lg-line-height);
+  }
+
+  .article-feature {
+    max-width: var(--container-content);
+    margin-inline: auto;
+    padding: var(--section-compact) var(--gutter) 0;
   }
 </style>
