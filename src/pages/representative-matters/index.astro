@@ -1,0 +1,103 @@
+---
+import { getCollection } from 'astro:content';
+import ConsultationCTA from '@/components/patterns/ConsultationCTA.astro';
+import PageHero from '@/components/patterns/PageHero.astro';
+import Container from '@/components/layout/Container.astro';
+import Section from '@/components/layout/Section.astro';
+import Stack from '@/components/layout/Stack.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getMatterRelationships } from '@/lib/content/relationships';
+
+const matterOrder = [
+  'preserving-a-viable-company-during-an-ownership-dispute',
+  'restructuring-a-property-acquisition-after-lease-inconsistencies-surfaced',
+  'separating-management-succession-from-family-inheritance',
+];
+const allMatters = await getCollection('matters');
+const matters = matterOrder
+  .map((id) => allMatters.find((entry) => entry.id === id))
+  .filter((entry): entry is (typeof allMatters)[number] => Boolean(entry));
+const matterStudies = await Promise.all(
+  matters.map(async (matter) => {
+    const { practiceArea } = await getMatterRelationships(matter);
+    if (!practiceArea) throw new Error(`Missing practice-area relationship for matter: ${matter.id}`);
+    return { matter, practiceArea };
+  }),
+);
+---
+
+<BaseLayout
+  title="Representative Matters | Hawthorne & Cole"
+  description="Fictional representative matters illustrating Hawthorne & Cole's approach to business disputes, commercial real estate, and estate planning."
+>
+  <PageHero
+    eyebrow="Representative Matters"
+    title="The legal strategy should serve the real objective."
+    intro={[
+      'The following fictional matters demonstrate how Hawthorne & Cole approaches disputes, transactions, and planning problems.',
+      'They do not describe real clients, real outcomes, or actual legal engagements.',
+    ]}
+    variant="compact"
+  />
+
+  <div class="matter-studies">
+    {matterStudies.map(({ matter, practiceArea }, index) => (
+      <Section tone={index % 2 === 0 ? 'default' : 'muted'} border="top">
+        <Container>
+          <article class="matter-study">
+            <header class="matter-study__header">
+              <p class="matter-study__category">{matter.data.category}</p>
+              <h2>{matter.data.title}</h2>
+              <a class="matter-study__practice" href={`/practice-areas/${practiceArea.id}/`}>
+                Related practice area: {practiceArea.data.title}
+                <span aria-hidden="true">→</span>
+              </a>
+            </header>
+
+            <div class="matter-study__body">
+              <section aria-labelledby={`situation-${matter.id}`}>
+                <Stack space="sm">
+                  <h3 id={`situation-${matter.id}`}>Situation</h3>
+                  <p>{matter.data.situation}</p>
+                </Stack>
+              </section>
+              <section aria-labelledby={`approach-${matter.id}`}>
+                <Stack space="sm">
+                  <h3 id={`approach-${matter.id}`}>Approach</h3>
+                  <p>{matter.data.approach}</p>
+                </Stack>
+              </section>
+              <section class="matter-study__outcome" aria-labelledby={`outcome-${matter.id}`}>
+                <Stack space="sm">
+                  <h3 id={`outcome-${matter.id}`}>Outcome</h3>
+                  <p>{matter.data.outcome}</p>
+                </Stack>
+              </section>
+            </div>
+
+            <p class="matter-study__disclosure">{matter.data.disclosure}</p>
+          </article>
+        </Container>
+      </Section>
+    ))}
+  </div>
+
+  <ConsultationCTA />
+</BaseLayout>
+
+<style>
+  .matter-study { display: grid; gap: var(--section-compact); }
+  .matter-study__header { display: grid; gap: var(--space-md); max-width: var(--container-content); }
+  .matter-study__category, .matter-study h2, .matter-study h3, .matter-study p { margin: 0; }
+  .matter-study__category { color: var(--primary); font-size: var(--type-label-size); font-weight: var(--type-label-weight); letter-spacing: var(--type-label-tracking); line-height: var(--type-label-line-height); text-transform: uppercase; }
+  .matter-study h2 { font-size: var(--type-heading-2-size); font-weight: var(--type-heading-2-weight); letter-spacing: var(--type-heading-2-tracking); line-height: var(--type-heading-2-line-height); }
+  .matter-study__practice { display: inline-flex; width: fit-content; gap: var(--space-sm); color: var(--primary); font-size: var(--type-body-sm-size); font-weight: var(--type-label-weight); text-underline-offset: var(--space-xs); }
+  .matter-study__body { display: grid; gap: var(--content-gap); }
+  .matter-study__body section { border-block-start: var(--border-width-hairline) solid var(--border); padding-block-start: var(--space-lg); }
+  .matter-study h3 { color: var(--primary); font-family: var(--font-family-interface), sans-serif; font-size: var(--type-label-size); font-weight: var(--type-label-weight); letter-spacing: var(--type-label-tracking); line-height: var(--type-label-line-height); text-transform: uppercase; }
+  .matter-study__body p { color: var(--muted-foreground); font-size: var(--type-body-lg-size); line-height: var(--type-body-lg-line-height); }
+  .matter-study__body .matter-study__outcome { border-block-start-color: var(--accent); }
+  .matter-study__outcome p { color: var(--foreground); }
+  .matter-study__disclosure { padding-block-start: var(--space-md); border-block-start: var(--border-width-hairline) solid var(--border); color: var(--muted-foreground); font-size: var(--type-caption-size); font-style: italic; line-height: var(--type-caption-line-height); }
+  @media (min-width: 48rem) { .matter-study__body { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+</style>
