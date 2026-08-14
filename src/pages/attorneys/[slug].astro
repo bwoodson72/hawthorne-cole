@@ -1,0 +1,182 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import ConsultationCTA from '@/components/patterns/ConsultationCTA.astro';
+import MatterCard from '@/components/patterns/MatterCard.astro';
+import RelatedContent from '@/components/patterns/RelatedContent.astro';
+import SectionHeading from '@/components/patterns/SectionHeading.astro';
+import Breadcrumb from '@/components/ui/Breadcrumb.astro';
+import ImageSlot from '@/components/ui/ImageSlot.astro';
+import Container from '@/components/layout/Container.astro';
+import Prose from '@/components/layout/Prose.astro';
+import Section from '@/components/layout/Section.astro';
+import Stack from '@/components/layout/Stack.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getAttorneyRelationships } from '@/lib/content/relationships';
+
+interface Props {
+  attorney: CollectionEntry<'attorneys'>;
+}
+
+export async function getStaticPaths() {
+  const attorneys = await getCollection('attorneys');
+  return attorneys.map((attorney) => ({
+    params: { slug: attorney.id },
+    props: { attorney },
+  }));
+}
+
+const { attorney } = Astro.props;
+const { Content } = await render(attorney);
+const { practiceAreas, insights, matters } = await getAttorneyRelationships(attorney);
+---
+
+<BaseLayout title={attorney.data.seo.title} description={attorney.data.seo.description ?? attorney.data.intro}>
+  <header class="profile-hero">
+    <Container>
+      <Breadcrumb
+        items={[
+          { label: 'Home', href: '/' },
+          { label: 'Attorneys', href: '/attorneys/' },
+          { label: attorney.data.name },
+        ]}
+      />
+      <div class="profile-hero__layout">
+        <Stack space="lg" class="profile-hero__content">
+          <p class="profile-hero__role">{attorney.data.eyebrow}</p>
+          <h1>{attorney.data.name}</h1>
+          <p class="profile-hero__intro">{attorney.data.intro}</p>
+        </Stack>
+        <div class="profile-hero__portrait">
+          {attorney.data.portrait ? (
+            <img src={attorney.data.portrait} alt={`${attorney.data.name}, ${attorney.data.title}`} width="800" height="1000" />
+          ) : (
+            <ImageSlot label={`${attorney.data.name} portrait`} expectedFilename={`${attorney.id}-portrait.webp`} ratio="portrait" />
+          )}
+        </div>
+      </div>
+    </Container>
+  </header>
+
+  <Section>
+    <Container>
+      <div class="biography-layout">
+        <SectionHeading heading="Biography" />
+        <Prose><Content /></Prose>
+      </div>
+    </Container>
+  </Section>
+
+  <Section tone="muted" border="both">
+    <Container>
+      <div class="profile-details">
+        <section aria-labelledby="practice-heading">
+          <Stack space="lg">
+            <h2 id="practice-heading">Practice Areas</h2>
+            <ul class="linked-list">
+              {practiceAreas.map((practiceArea) => (
+                <li><a href={`/practice-areas/${practiceArea.id}/`}>{practiceArea.data.title}<span aria-hidden="true">→</span></a></li>
+              ))}
+            </ul>
+          </Stack>
+        </section>
+        <section aria-labelledby="education-heading">
+          <Stack space="lg">
+            <h2 id="education-heading">Education — Fictional</h2>
+            <dl class="credential-list">
+              {attorney.data.education.map((education) => <div><dt>{education.institution}</dt><dd>{education.degree}</dd></div>)}
+            </dl>
+          </Stack>
+        </section>
+        <section aria-labelledby="admissions-heading">
+          <Stack space="lg">
+            <h2 id="admissions-heading">Admissions — Fictional</h2>
+            <ul class="credential-list">
+              {attorney.data.admissions.map((admission) => <li>{admission}</li>)}
+            </ul>
+          </Stack>
+        </section>
+      </div>
+    </Container>
+  </Section>
+
+  <Section tone="inverse" spacing="compact">
+    <Container width="content">
+      <figure class="philosophy">
+        <blockquote>{attorney.data.philosophy}</blockquote>
+        <figcaption>{attorney.data.name}, {attorney.data.title}</figcaption>
+      </figure>
+    </Container>
+  </Section>
+
+  {matters.length > 0 && (
+    <Section>
+      <Container>
+        <Stack space="xl">
+          <SectionHeading eyebrow="Experience" heading="Representative Matters" />
+          <div class="matter-grid">
+            {matters.map((matter) => (
+              <MatterCard
+                title={matter.data.title}
+                category={matter.data.category}
+                summary={matter.data.summary}
+                outcome={matter.data.outcomePreview}
+                disclosure={matter.data.disclosure}
+                href={`/representative-matters/${matter.id}/`}
+                variant="editorial"
+              />
+            ))}
+          </div>
+        </Stack>
+      </Container>
+    </Section>
+  )}
+
+  <Section tone="muted" border="top">
+    <Container>
+      <RelatedContent
+        heading="Related Insights"
+        items={insights.map((insight) => ({
+          eyebrow: insight.data.category,
+          title: insight.data.title,
+          description: insight.data.summary,
+          href: `/insights/${insight.id}/`,
+        }))}
+      />
+    </Container>
+  </Section>
+
+  <ConsultationCTA variant="closing" label={attorney.data.cta} />
+</BaseLayout>
+
+<style>
+  .profile-hero { padding-block: var(--section-compact) var(--section-default); border-block-end: var(--border-width-hairline) solid var(--border); }
+  .profile-hero__layout { display: grid; gap: var(--content-gap); padding-block-start: var(--space-xl); align-items: center; }
+  .profile-hero__content { max-width: var(--container-content); }
+  .profile-hero__role, .profile-hero h1, .profile-hero__intro { margin: 0; }
+  .profile-hero__role { color: var(--primary); font-size: var(--type-label-size); font-weight: var(--type-label-weight); letter-spacing: var(--type-label-tracking); line-height: var(--type-label-line-height); text-transform: uppercase; }
+  .profile-hero h1 { font-size: var(--type-heading-1-size); font-weight: var(--type-heading-1-weight); letter-spacing: var(--type-heading-1-tracking); line-height: var(--type-heading-1-line-height); }
+  .profile-hero__intro { max-width: var(--container-prose); color: var(--muted-foreground); font-size: var(--type-body-lg-size); line-height: var(--type-body-lg-line-height); }
+  .profile-hero__portrait { max-width: var(--container-narrow); }
+  .profile-hero__portrait img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; }
+  .biography-layout { display: grid; gap: var(--content-gap); }
+  .profile-details { display: grid; gap: var(--section-compact); }
+  .profile-details h2 { margin: 0; font-size: var(--type-heading-4-size); line-height: var(--type-heading-4-line-height); }
+  .linked-list, .credential-list { display: grid; gap: 0; margin: 0; padding: 0; border-block-end: var(--border-width-hairline) solid var(--border); list-style: none; }
+  .linked-list li, .credential-list li, .credential-list div { border-block-start: var(--border-width-hairline) solid var(--border); padding-block: var(--space-md); }
+  .linked-list a { display: flex; justify-content: space-between; gap: var(--space-md); color: var(--foreground); font-weight: var(--type-label-weight); text-decoration: none; }
+  .linked-list a:hover { color: var(--primary); }
+  .credential-list dt { font-weight: var(--type-label-weight); }
+  .credential-list dd { margin: 0; color: var(--muted-foreground); }
+  .philosophy { margin: 0; }
+  .philosophy blockquote { margin: 0; color: var(--inverse-foreground); font-family: var(--font-family-display), serif; font-size: var(--type-heading-2-size); font-weight: var(--type-heading-2-weight); letter-spacing: var(--type-heading-2-tracking); line-height: var(--type-heading-2-line-height); }
+  .philosophy blockquote::before { content: '“'; color: var(--accent); }
+  .philosophy blockquote::after { content: '”'; color: var(--accent); }
+  .philosophy figcaption { margin-block-start: var(--space-lg); color: var(--inverse-muted-foreground); font-size: var(--type-body-sm-size); }
+  .matter-grid { display: grid; gap: var(--content-gap); }
+  @media (min-width: 48rem) {
+    .profile-hero__layout { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
+    .biography-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); align-items: start; }
+    .profile-details { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .matter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+</style>

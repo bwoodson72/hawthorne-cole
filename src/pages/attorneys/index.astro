@@ -1,0 +1,60 @@
+---
+import { getCollection } from 'astro:content';
+import AttorneyCard from '@/components/patterns/AttorneyCard.astro';
+import ConsultationCTA from '@/components/patterns/ConsultationCTA.astro';
+import PageHero from '@/components/patterns/PageHero.astro';
+import Container from '@/components/layout/Container.astro';
+import Section from '@/components/layout/Section.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getAttorneyRelationships } from '@/lib/content/relationships';
+
+const attorneyOrder = ['elizabeth-hawthorne', 'daniel-cole'];
+const allAttorneys = await getCollection('attorneys');
+const attorneys = attorneyOrder
+  .map((id) => allAttorneys.find((entry) => entry.id === id))
+  .filter((entry): entry is (typeof allAttorneys)[number] => Boolean(entry));
+const attorneyProfiles = await Promise.all(
+  attorneys.map(async (attorney) => ({
+    attorney,
+    practiceAreas: (await getAttorneyRelationships(attorney)).practiceAreas,
+  })),
+);
+---
+
+<BaseLayout
+  title="Attorneys | Hawthorne & Cole"
+  description="Meet the fictional attorneys of Hawthorne & Cole, a boutique Fort Worth firm focused on consequential business, property, and estate decisions."
+>
+  <PageHero
+    eyebrow="Attorneys"
+    title="Counsel grounded in judgment, not volume."
+    intro="Hawthorne & Cole is intentionally structured as a small firm. Clients work directly with experienced attorneys rather than being passed through layers of staff before reaching the person responsible for the matter."
+    variant="compact"
+  />
+
+  <Section as="div">
+    <Container>
+      <div class="attorney-index">
+        {attorneyProfiles.map(({ attorney, practiceAreas }) => (
+          <AttorneyCard
+            name={attorney.data.name}
+            title={attorney.data.title}
+            focusAreas={practiceAreas.map(({ data }) => data.title)}
+            bio={attorney.data.shortBio}
+            href={`/attorneys/${attorney.id}/`}
+            linkLabel={`Meet ${attorney.data.name.split(' ')[0]}`}
+            expectedPortraitFilename={`${attorney.id}-portrait.webp`}
+            variant="featured"
+          />
+        ))}
+      </div>
+    </Container>
+  </Section>
+
+  <ConsultationCTA />
+</BaseLayout>
+
+<style>
+  .attorney-index { display: grid; gap: var(--section-compact); }
+  @media (min-width: 64rem) { .attorney-index { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+</style>
