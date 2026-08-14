@@ -1,7 +1,4 @@
 @import "tailwindcss";
-@import "tw-animate-css";
 @import "./tokens.css";
 @import "./starwind.css";
 @import "./base.css";
-
-@plugin "@tailwindcss/forms";

@@ -318,7 +318,10 @@
   .matter-options { display: grid; gap: var(--space-md); }
   .matter-options label { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-md); border: var(--border-width-hairline) solid var(--border); border-radius: var(--radius-card); padding: var(--space-lg); cursor: pointer; transition: border-color var(--duration-fast) var(--ease-standard), background-color var(--duration-fast) var(--ease-standard); }
   .matter-options label:hover, .matter-options label.checked { border-color: var(--primary); background: var(--surface); }
-  .matter-options input, .choice-row input { margin-block-start: var(--space-xs); color: var(--primary); }
+  .matter-options input, .choice-row input {
+    margin-block-start: var(--space-xs);
+    accent-color: var(--primary);
+  }
   .matter-options label > span { display: grid; gap: var(--space-xs); }
   .matter-options strong { font-family: var(--font-family-display), serif; font-size: var(--type-heading-4-size); }
   .matter-options small, .helper { color: var(--muted-foreground); font-size: var(--type-body-sm-size); line-height: var(--type-body-sm-line-height); }
