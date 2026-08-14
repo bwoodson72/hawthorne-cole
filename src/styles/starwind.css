@@ -1,167 +1,157 @@
-@import "tailwindcss";
-@import "tw-animate-css";
-@plugin "@tailwindcss/forms";
+/*
+ * Starwind compatibility bridge.
+ * Starwind roles resolve to Hawthorne & Cole semantic tokens rather than a
+ * separate component-library theme.
+ */
 @custom-variant dark (&:where(.dark, .dark *));
 
-@theme {
-  --animate-accordion-down: accordion-down 0.2s ease-out;
-  --animate-accordion-up: accordion-up 0.2s ease-out;
-
-  @keyframes accordion-down {
-    from {
-      height: 0;
-    }
-    to {
-      height: var(--starwind-accordion-content-height);
-    }
-  }
-
-  @keyframes accordion-up {
-    from {
-      height: var(--starwind-accordion-content-height);
-    }
-    to {
-      height: 0;
-    }
-  }
+:root {
+  /* Starwind replaces this fallback with the measured accordion panel height. */
+  --starwind-accordion-content-height: 0px;
 }
 
 @theme inline {
+  /* Semantic colors available to both application and Starwind components. */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
+  --color-surface: var(--surface);
+  --color-surface-foreground: var(--surface-foreground);
+  --color-surface-muted: var(--surface-muted);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary-accent: var(--primary-accent);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-secondary-accent: var(--secondary-accent);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
-  --color-info: var(--info);
-  --color-info-foreground: var(--info-foreground);
-  --color-success: var(--success);
-  --color-success-foreground: var(--success-foreground);
-  --color-warning: var(--warning);
-  --color-warning-foreground: var(--warning-foreground);
-  --color-error: var(--error);
-  --color-error-foreground: var(--error-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-outline: var(--outline);
+  --color-inverse: var(--inverse);
+  --color-inverse-foreground: var(--inverse-foreground);
+  --color-danger: var(--danger);
+  --color-danger-foreground: var(--danger-foreground);
 
-  --radius-xs: calc(var(--radius) - 0.375rem);
-  --radius-sm: calc(var(--radius) - 0.25rem);
-  --radius-md: calc(var(--radius) - 0.125rem);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 0.25rem);
-  --radius-2xl: calc(var(--radius) + 0.5rem);
-  --radius-3xl: calc(var(--radius) + 1rem);
+  /* Starwind aliases. */
+  --color-card: var(--surface);
+  --color-card-foreground: var(--surface-foreground);
+  --color-popover: var(--surface);
+  --color-popover-foreground: var(--surface-foreground);
+  --color-info: var(--secondary-accent);
+  --color-info-foreground: var(--inverse-foreground);
+  --color-success: var(--secondary-accent);
+  --color-success-foreground: var(--inverse-foreground);
+  --color-warning: var(--accent);
+  --color-warning-foreground: var(--accent-foreground);
+  --color-error: var(--danger);
+  --color-error-foreground: var(--danger-foreground);
+  --color-sidebar: var(--inverse);
+  --color-sidebar-foreground: var(--inverse-foreground);
+  --color-sidebar-primary: var(--primary-accent);
+  --color-sidebar-primary-foreground: var(--primary-foreground);
+  --color-sidebar-accent: var(--accent);
+  --color-sidebar-accent-foreground: var(--accent-foreground);
+  --color-sidebar-border: var(--border);
+  --color-sidebar-outline: var(--outline);
 
-  --color-sidebar: var(--sidebar-background);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-outline: var(--sidebar-outline);
+  /* Font families. */
+  --font-display: var(--font-family-display);
+  --font-interface: var(--font-family-interface);
+  --font-sans: var(--font-family-interface);
+
+  /* Semantic type scale. */
+  --text-display: var(--type-display-size);
+  --text-display--line-height: var(--type-display-line-height);
+  --text-display--font-weight: var(--type-display-weight);
+  --text-display--letter-spacing: var(--type-display-tracking);
+  --text-heading-1: var(--type-heading-1-size);
+  --text-heading-1--line-height: var(--type-heading-1-line-height);
+  --text-heading-1--font-weight: var(--type-heading-1-weight);
+  --text-heading-1--letter-spacing: var(--type-heading-1-tracking);
+  --text-heading-2: var(--type-heading-2-size);
+  --text-heading-2--line-height: var(--type-heading-2-line-height);
+  --text-heading-2--font-weight: var(--type-heading-2-weight);
+  --text-heading-2--letter-spacing: var(--type-heading-2-tracking);
+  --text-heading-3: var(--type-heading-3-size);
+  --text-heading-3--line-height: var(--type-heading-3-line-height);
+  --text-heading-3--font-weight: var(--type-heading-3-weight);
+  --text-heading-3--letter-spacing: var(--type-heading-3-tracking);
+  --text-heading-4: var(--type-heading-4-size);
+  --text-heading-4--line-height: var(--type-heading-4-line-height);
+  --text-heading-4--font-weight: var(--type-heading-4-weight);
+  --text-heading-4--letter-spacing: var(--type-heading-4-tracking);
+  --text-body-lg: var(--type-body-lg-size);
+  --text-body-lg--line-height: var(--type-body-lg-line-height);
+  --text-body-lg--font-weight: var(--type-body-lg-weight);
+  --text-body: var(--type-body-size);
+  --text-body--line-height: var(--type-body-line-height);
+  --text-body--font-weight: var(--type-body-weight);
+  --text-body-sm: var(--type-body-sm-size);
+  --text-body-sm--line-height: var(--type-body-sm-line-height);
+  --text-body-sm--font-weight: var(--type-body-sm-weight);
+  --text-label: var(--type-label-size);
+  --text-label--line-height: var(--type-label-line-height);
+  --text-label--font-weight: var(--type-label-weight);
+  --text-label--letter-spacing: var(--type-label-tracking);
+  --text-caption: var(--type-caption-size);
+  --text-caption--line-height: var(--type-caption-line-height);
+  --text-caption--font-weight: var(--type-caption-weight);
+  --text-caption--letter-spacing: var(--type-caption-tracking);
+
+  /* Spacing and layout. */
+  --spacing-xs: var(--space-xs);
+  --spacing-sm: var(--space-sm);
+  --spacing-md: var(--space-md);
+  --spacing-lg: var(--space-lg);
+  --spacing-xl: var(--space-xl);
+  --spacing-gutter: var(--gutter);
+  --spacing-card: var(--card-padding);
+  --spacing-content: var(--content-gap);
+  --spacing-section-compact: var(--section-compact);
+  --spacing-section: var(--section-default);
+  --spacing-section-generous: var(--section-generous);
+  --container-site: var(--layout-width-site);
+  --container-content: var(--layout-width-content);
+  --container-prose: var(--layout-width-prose);
+  --container-narrow: var(--layout-width-narrow);
+
+  /* Shape and elevation. */
+  --radius-sm: var(--shape-radius-sm);
+  --radius-control: var(--shape-radius-control);
+  --radius-card: var(--shape-radius-card);
+  --radius-pill: var(--shape-radius-pill);
+  --shadow-subtle: var(--elevation-subtle);
+  --shadow-elevated: var(--elevation-elevated);
+
+  /* Motion. */
+  --duration-fast: var(--motion-duration-fast);
+  --duration-default: var(--motion-duration-default);
+  --duration-slow: var(--motion-duration-slow);
+  --ease-standard: var(--motion-ease-standard);
+  --ease-emphasized: var(--motion-ease-emphasized);
+  --animate-accordion-down: accordion-down var(--duration-default) var(--ease-standard);
+  --animate-accordion-up: accordion-up var(--duration-default) var(--ease-standard);
 }
 
-:root {
-  --background: var(--color-white);
-  --foreground: var(--color-neutral-950);
-  --card: var(--color-white);
-  --card-foreground: var(--color-neutral-950);
-  --popover: var(--color-white);
-  --popover-foreground: var(--color-neutral-950);
-  --primary: var(--color-blue-700);
-  --primary-foreground: var(--color-neutral-50);
-  --primary-accent: var(--color-blue-700);
-  --secondary: var(--color-neutral-200);
-  --secondary-foreground: var(--color-neutral-950);
-  --secondary-accent: var(--color-neutral-950);
-  --muted: var(--color-neutral-100);
-  --muted-foreground: var(--color-neutral-600);
-  --accent: var(--color-neutral-100);
-  --accent-foreground: var(--color-neutral-900);
-  --info: var(--color-sky-300);
-  --info-foreground: var(--color-sky-950);
-  --success: var(--color-green-300);
-  --success-foreground: var(--color-green-950);
-  --warning: var(--color-amber-300);
-  --warning-foreground: var(--color-amber-950);
-  --error: var(--color-red-700);
-  --error-foreground: var(--color-neutral-50);
-  --border: var(--color-neutral-200);
-  --input: var(--color-neutral-200);
-  --outline: var(--color-neutral-400);
-  --radius: 0.625rem;
-
-  /* sidebar variables */
-  --sidebar-background: var(--color-neutral-50);
-  --sidebar-foreground: var(--color-neutral-950);
-  --sidebar-primary: var(--color-blue-700);
-  --sidebar-primary-foreground: var(--color-neutral-50);
-  --sidebar-accent: var(--color-neutral-100);
-  --sidebar-accent-foreground: var(--color-neutral-900);
-  --sidebar-border: var(--color-neutral-200);
-  --sidebar-outline: var(--color-neutral-400);
-}
-
-.dark {
-  --background: var(--color-neutral-950);
-  --foreground: var(--color-neutral-50);
-  --card: var(--color-neutral-900);
-  --card-foreground: var(--color-neutral-50);
-  --popover: var(--color-neutral-900);
-  --popover-foreground: var(--color-neutral-50);
-  --primary: var(--color-blue-700);
-  --primary-foreground: var(--color-neutral-50);
-  --primary-accent: var(--color-blue-400);
-  --secondary: var(--color-neutral-800);
-  --secondary-foreground: var(--color-neutral-50);
-  --secondary-accent: var(--color-neutral-50);
-  --muted: var(--color-neutral-800);
-  --muted-foreground: var(--color-neutral-400);
-  --accent: var(--color-neutral-700);
-  --accent-foreground: var(--color-neutral-50);
-  --info: var(--color-sky-300);
-  --info-foreground: var(--color-sky-950);
-  --success: var(--color-green-300);
-  --success-foreground: var(--color-green-950);
-  --warning: var(--color-amber-300);
-  --warning-foreground: var(--color-amber-950);
-  --error: var(--color-red-800);
-  --error-foreground: var(--color-neutral-50);
-  --border: --alpha(var(--color-neutral-50) / 10%);
-  --input: --alpha(var(--color-neutral-50) / 15%);
-  --outline: var(--color-neutral-500);
-
-  /* sidebars variables */
-  --sidebar-background: var(--color-neutral-900);
-  --sidebar-foreground: var(--color-neutral-50);
-  --sidebar-primary: var(--color-blue-700);
-  --sidebar-primary-foreground: var(--color-neutral-50);
-  --sidebar-accent: var(--color-neutral-800);
-  --sidebar-accent-foreground: var(--color-neutral-100);
-  --sidebar-border: var(--color-neutral-800);
-  --sidebar-outline: var(--color-neutral-600);
-}
-
-@layer base {
-  * {
-    @apply border-border outline-outline/50;
+@theme {
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--starwind-accordion-content-height, 0);
+    }
   }
-  body {
-    @apply bg-background text-foreground scheme-light dark:scheme-dark;
-  }
-  button {
-    @apply cursor-pointer;
+
+  @keyframes accordion-up {
+    from {
+      height: var(--starwind-accordion-content-height, 0);
+    }
+    to {
+      height: 0;
+    }
   }
 }

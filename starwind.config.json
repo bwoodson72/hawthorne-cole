@@ -8,7 +8,7 @@
   },
   "components": [],
   "tailwind": {
-    "css": "src/styles/starwind.css",
+    "css": "src/styles/global.css",
     "baseColor": "neutral",
     "cssVariables": true
   },

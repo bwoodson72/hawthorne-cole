@@ -1,0 +1,146 @@
+:root {
+  /* Primitive color tokens: raw values live only in this layer. */
+  --hc-ivory-50: oklch(0.985 0.008 82);
+  --hc-ivory-100: oklch(0.965 0.013 80);
+  --hc-charcoal-700: oklch(0.39 0.014 65);
+  --hc-charcoal-900: oklch(0.25 0.012 65);
+  --hc-charcoal-950: oklch(0.19 0.01 65);
+  --hc-oxblood-600: oklch(0.43 0.105 20);
+  --hc-oxblood-700: oklch(0.35 0.09 20);
+  --hc-brass-500: oklch(0.63 0.075 76);
+  --hc-warm-gray-200: oklch(0.89 0.012 75);
+  --hc-warm-gray-400: oklch(0.69 0.012 70);
+
+  /* Semantic color tokens. */
+  --background: var(--hc-ivory-50);
+  --foreground: var(--hc-charcoal-900);
+  --surface: var(--hc-ivory-100);
+  --surface-foreground: var(--hc-charcoal-900);
+  --surface-muted: var(--hc-warm-gray-200);
+  --primary: var(--hc-oxblood-700);
+  --primary-foreground: var(--hc-ivory-50);
+  --primary-accent: var(--hc-oxblood-600);
+  --secondary: var(--hc-warm-gray-200);
+  --secondary-foreground: var(--hc-charcoal-950);
+  --secondary-accent: var(--hc-charcoal-700);
+  --accent: var(--hc-brass-500);
+  --accent-foreground: var(--hc-charcoal-950);
+  --muted: var(--hc-ivory-100);
+  --muted-foreground: var(--hc-charcoal-700);
+  --border: var(--hc-warm-gray-200);
+  --input: var(--hc-warm-gray-400);
+  --outline: var(--hc-oxblood-600);
+  --inverse: var(--hc-charcoal-950);
+  --inverse-foreground: var(--hc-ivory-50);
+  --danger: var(--hc-oxblood-600);
+  --danger-foreground: var(--hc-ivory-50);
+
+  /* Font-family tokens. Font files will be added with the asset system. */
+  --font-family-display: "Source Serif 4", "Iowan Old Style", "Palatino Linotype", serif;
+  --font-family-interface: "Inter", "Helvetica Neue", Arial, sans-serif;
+
+  /* Semantic typography tokens. */
+  --type-display-size: clamp(3.5rem, 8vw, 7.5rem);
+  --type-display-line-height: 0.96;
+  --type-display-weight: 500;
+  --type-display-tracking: -0.035em;
+  --type-heading-1-size: clamp(2.75rem, 6vw, 5.5rem);
+  --type-heading-1-line-height: 1;
+  --type-heading-1-weight: 500;
+  --type-heading-1-tracking: -0.03em;
+  --type-heading-2-size: clamp(2.125rem, 4vw, 3.75rem);
+  --type-heading-2-line-height: 1.08;
+  --type-heading-2-weight: 500;
+  --type-heading-2-tracking: -0.025em;
+  --type-heading-3-size: clamp(1.625rem, 2.5vw, 2.5rem);
+  --type-heading-3-line-height: 1.15;
+  --type-heading-3-weight: 500;
+  --type-heading-3-tracking: -0.015em;
+  --type-heading-4-size: clamp(1.25rem, 1.5vw, 1.625rem);
+  --type-heading-4-line-height: 1.25;
+  --type-heading-4-weight: 600;
+  --type-heading-4-tracking: -0.01em;
+  --type-body-lg-size: 1.125rem;
+  --type-body-lg-line-height: 1.7;
+  --type-body-lg-weight: 400;
+  --type-body-size: 1rem;
+  --type-body-line-height: 1.65;
+  --type-body-weight: 400;
+  --type-body-sm-size: 0.875rem;
+  --type-body-sm-line-height: 1.55;
+  --type-body-sm-weight: 400;
+  --type-label-size: 0.8125rem;
+  --type-label-line-height: 1.25;
+  --type-label-weight: 600;
+  --type-label-tracking: 0.06em;
+  --type-caption-size: 0.75rem;
+  --type-caption-line-height: 1.4;
+  --type-caption-weight: 500;
+  --type-caption-tracking: 0.04em;
+
+  /* Spacing tokens. */
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2.25rem;
+  --content-gap: clamp(1.5rem, 3vw, 3rem);
+  --card-padding: clamp(1.5rem, 2.5vw, 2.25rem);
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+
+  /* Section-spacing tokens. */
+  --section-compact: clamp(2.75rem, 5vw, 4.5rem);
+  --section-default: clamp(4.5rem, 8vw, 8rem);
+  --section-generous: clamp(6rem, 11vw, 11rem);
+
+  /* Layout-width tokens. */
+  --layout-width-site: 80rem;
+  --layout-width-content: 64rem;
+  --layout-width-prose: 44rem;
+  --layout-width-narrow: 36rem;
+  --container-site: var(--layout-width-site);
+  --container-content: var(--layout-width-content);
+  --container-prose: var(--layout-width-prose);
+  --container-narrow: var(--layout-width-narrow);
+  --header-height: 5rem;
+
+  /* Radius and border tokens. */
+  --shape-radius-sm: 0.125rem;
+  --shape-radius-control: 0.25rem;
+  --shape-radius-card: 0.375rem;
+  --shape-radius-pill: 9999px;
+  --radius-sm: var(--shape-radius-sm);
+  --radius-control: var(--shape-radius-control);
+  --radius-card: var(--shape-radius-card);
+  --radius-pill: var(--shape-radius-pill);
+  --border-width-hairline: 1px;
+  --border-width-emphasis: 2px;
+
+  /* Elevation tokens. */
+  --elevation-subtle: 0 1px 2px oklch(0.19 0.01 65 / 0.06);
+  --elevation-elevated: 0 1rem 2.5rem oklch(0.19 0.01 65 / 0.12);
+  --shadow-subtle: var(--elevation-subtle);
+  --shadow-elevated: var(--elevation-elevated);
+
+  /* Motion tokens. */
+  --motion-duration-fast: 120ms;
+  --motion-duration-default: 200ms;
+  --motion-duration-slow: 360ms;
+  --motion-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --motion-ease-emphasized: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --duration-fast: var(--motion-duration-fast);
+  --duration-default: var(--motion-duration-default);
+  --duration-slow: var(--motion-duration-slow);
+  --ease-standard: var(--motion-ease-standard);
+  --ease-emphasized: var(--motion-ease-emphasized);
+
+  /* Limited component and pattern contracts. */
+  --card-radius: var(--radius-card);
+  --card-border: var(--border-width-hairline) solid var(--border);
+  --hero-max-width: var(--container-content);
+  --hero-spacing: var(--section-generous);
+  --section-space: var(--section-default);
+  --section-space-compact: var(--section-compact);
+  --content-measure: var(--container-content);
+  --prose-measure: var(--container-prose);
+}
